@@ -33,7 +33,7 @@ class MENU
         bool SIXTH_ELDER_bought;
         bool ELDER_SATHE_bought;
         bool ETHAS_bought;
-
+        
         void BuyCharacters();
 
         void BuyItems();
@@ -44,14 +44,178 @@ class MENU
 
         void Customize();
         
+        int MainMenu();
+        
+        int SecondaryMenu();
+    
     private:
         OSL_IMAGE * selector;
+        OSL_IMAGE * background;
+        int menuChoice;
+        int cost;
 }menu;
+
+int MENU::MainMenu()
+{
+    menuChoice = 1;
+    background = oslLoadImageFilePNG((char*)"img/data/menu.png", OSL_IN_RAM, OSL_PF_5551);
+    selector = oslLoadImageFilePNG((char*)"img/data/selector.png", OSL_IN_RAM, OSL_PF_5551);  
+    
+    //set up a menu animation
+    PLAYER menuGuy;
+    menuGuy.image = menuGuy.SetImage(-1);
+    menuGuy.position = STILL_RIGHT;
+    oslSetImageTileSize(menuGuy.image,1 * 53,menuGuy.position,53,76);
+    menuGuy.image->x = 330;
+    menuGuy.image->y = 140;
+    
+    #define START_GAME 1
+    #define CUSTOMIZE 2
+    #define CREDITS 3
+    #define EXIT_GAME 4
+
+	while (1)
+	{	
+		oslReadKeys();
+		
+		if(osl_keys->pressed.down){menuChoice++; oslPlaySound(select, 2);}
+		if(osl_keys->pressed.up)  {menuChoice--; oslPlaySound(select, 2);}
+		if(menuChoice > 4) menuChoice = 1;
+        if(menuChoice < 1) menuChoice = 4;
+		
+		if(menuChoice == START_GAME){
+		  placeSelector(selector, 19,113);
+		  if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return SHOW_SECOND_MENU;}                      
+		}
+        
+        else if(menuChoice == CUSTOMIZE){
+		  placeSelector(selector, 19, 149);
+		  if(osl_keys->pressed.cross){oslPlaySound(select, 2); menu.Customize(); }
+		}	
+		
+		else if(menuChoice == CREDITS)
+        {
+		  placeSelector(selector, 19, 191);
+		  if(osl_keys->pressed.cross)
+          {
+                oslPlaySound(select, 2);
+                while(1)
+                {
+    	          oslReadKeys();
+    	          if(osl_keys->pressed.circle) {oslPlaySound(select, 2); break;}
+    	  
+                  oslStartDrawing();
+                  oslClearScreen(BLACK);
+          
+                  oslSetTextColor(RED);
+                  oslPrintf_xy(5, 15, "Credits: Epic Sathe v0.4");
+                  oslSetTextColor(WHITE);
+          
+                  oslPrintf_xy(5, 25, "Epic Sathe, an epic game made by V@ughn");
+          
+                  oslSetTextColor(RED);
+                  oslPrintf_xy(5, 45, "Tools used:");
+                  oslSetTextColor(WHITE);
+          
+                  oslPrintf_xy(5, 55, "-Dev-C++ 4.9.9.2");
+                  oslPrintf_xy(5, 65, "-sfxr generator");
+                  oslPrintf_xy(5, 75, "-photoshop cs5");
+                  oslPrintf_xy(5, 85, "-oslib + gu of pspsdk");
+          
+                  oslEndDrawing();
+                  oslSyncFrame();
+                }
+          }
+		}
+		  
+		else if(menuChoice == EXIT_GAME){
+		  placeSelector(selector, 19, 228);
+	      if(osl_keys->pressed.cross) return EXIT;
+		}
+		  
+		//Moves the sprite in the row that it is in
+        menuGuy.manipulate++; if(menuGuy.manipulate > 9) {menuGuy.march++; menuGuy.manipulate = 0;}
+        oslSetImageTileSize(menuGuy.image,menuGuy.march * 53,menuGuy.position,53,76);
+        if(menuGuy.march == 3) menuGuy.march = 0;
+		  
+		oslStartDrawing();
+		oslClearScreen(BLACK);
+		oslDrawImage(background);
+        oslDrawImage(selector);
+        oslDrawImage(menuGuy.image);
+		oslEndDrawing();
+		oslSyncFrame();		
+    }
+    
+    if(background != NULL){oslDeleteImage(background); background = NULL;}
+    if(selector != NULL){oslDeleteImage(selector); selector = NULL;}
+    
+    return 1;
+}
+
+int MENU::SecondaryMenu()
+{
+    menuChoice = 1;
+    background = oslLoadImageFilePNG((char*)"img/data/menu2.png", OSL_IN_RAM, OSL_PF_5551);
+    selector = oslLoadImageFilePNG((char*)"img/data/selector.png", OSL_IN_RAM, OSL_PF_5551);  
+    
+    #define SOLO_MODE 1
+    #define LOAD_OLD_STATS 2
+    #define BOSS_MODE 3
+    #define MULTIPLAYER 4
+    #define BACK 5
+
+	while (1)
+	{	
+		oslReadKeys();
+		
+		if(osl_keys->pressed.down){menuChoice++; oslPlaySound(select, 2);}
+		if(osl_keys->pressed.up)  {menuChoice--; oslPlaySound(select, 2);}
+		if(menuChoice > 5) menuChoice = 1;
+        if(menuChoice < 1) menuChoice = 5;
+		
+		if(menuChoice == SOLO_MODE){
+		  placeSelector(selector, 19,104);
+		  if(osl_keys->pressed.cross) {oslPlaySound(select, 2); MAIN_GAME(); return SHOW_MAIN_MENU;}                      
+		}
+        
+        else if(menuChoice == LOAD_OLD_STATS){
+		  placeSelector(selector, 19, 141);
+		  if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+		}	
+		
+		else if(menuChoice == BOSS_MODE){
+		  placeSelector(selector, 19, 175);
+		  if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+		}
+		  
+		else if(menuChoice == MULTIPLAYER){
+		  placeSelector(selector, 19, 212);
+	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); online.InitAdhocGame(); return SHOW_MAIN_MENU;}
+		}
+		
+		else if(menuChoice == BACK){
+		  placeSelector(selector, 19, 248);
+	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return SHOW_MAIN_MENU;}
+		}
+		  
+		oslStartDrawing();
+		oslClearScreen(BLACK);
+		oslDrawImage(background);
+        oslDrawImage(selector);
+		oslEndDrawing();
+		oslSyncFrame();		
+    }
+    
+    if(background != NULL){oslDeleteImage(background); background = NULL;}
+    if(selector != NULL){oslDeleteImage(selector); selector = NULL;}
+    
+    return 1;
+}
 
 void MENU::Customize()
 {
     //load images
-    OSL_IMAGE * background, *selector;
     background = oslLoadImageFilePNG((char*)"img/data/customize1.png", OSL_IN_RAM, OSL_PF_5551);
     selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
     
@@ -119,10 +283,8 @@ void MENU::Customize()
 
 void MENU::BuyItems()
 {
-    OSL_IMAGE * selector;
-    OSL_IMAGE * background;
-    
-    int menuChoice = 1;
+    cost = 99999;
+    menuChoice = 1;
     selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
     background = oslLoadImageFilePNG((char*)"img/data/customize3.png", OSL_IN_RAM, OSL_PF_5551);
     
@@ -145,22 +307,26 @@ void MENU::BuyItems()
         
         if(menuChoice == FLYING_PUNCH){
 		    placeSelector(selector, 19,116);
-		    if(osl_keys->pressed.cross) {oslPlaySound(select, 2);}                      
+		    if(osl_keys->pressed.cross) {oslPlaySound(select, 2);}  
+            else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                         
 		}
         
         else if(menuChoice == FREEZING_PUNCH){
 			placeSelector(selector, 19, 148);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}	
 		
 		else if(menuChoice == SWIFTNESS){
 			placeSelector(selector, 20, 177);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		  
 		else if(menuChoice == SATHES_BRUTE){
 			placeSelector(selector, 20, 205);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		
 		else if(menuChoice == BACK){
@@ -189,12 +355,9 @@ void MENU::BuyItems()
 
 void MENU::BuyLives()
 {
-    OSL_IMAGE * selector2;
-    OSL_IMAGE * background;
-    
-    int menuChoice = 1;
-    int cost = 0;
-    selector2 = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
+    menuChoice = 1;
+    cost = 0;
+    selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
     background = oslLoadImageFilePNG((char*)"img/data/customize4.png", OSL_IN_RAM, OSL_PF_5551);
     
     //menu macros
@@ -215,42 +378,42 @@ void MENU::BuyLives()
         if(menuChoice < 1) menuChoice = 5;
         
         if(menuChoice == BUY1){
-		    placeSelector(selector2, 19,116);
+		    placeSelector(selector, 19,116);
 		    cost = 100;
-		    if(osl_keys->pressed.cross) 
-              if(player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives++;}                    
+		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives++;}    
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                     
 		}
         
         else if(menuChoice == BUY3){
-			placeSelector(selector2, 19, 148);
+			placeSelector(selector, 19, 148);
 			cost = 250;
-		    if(osl_keys->pressed.cross) 
-              if(player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=3;}                    
+		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=3;}       
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                  
 		}	
 		
 		else if(menuChoice == BUY9){
-			placeSelector(selector2, 20, 177);
+			placeSelector(selector, 20, 177);
 			cost = 500;
-		    if(osl_keys->pressed.cross) 
-              if(player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=9;}                    
+		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=9;}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                       
 		}
 		  
 		else if(menuChoice == BUY15){
-			placeSelector(selector2, 20, 205);
+			placeSelector(selector, 20, 205);
 			cost = 890;
-		    if(osl_keys->pressed.cross) 
-              if(player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=15;}                    
+		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=15;}  
+            else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                       
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selector2, 20, 232);
+			placeSelector(selector, 20, 232);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2); break;}
 		}
 		
         oslStartDrawing();
         oslClearScreen(BLACK);
         oslDrawImage(background);
-        oslDrawImage(selector2);
+        oslDrawImage(selector);
         
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
@@ -260,7 +423,7 @@ void MENU::BuyLives()
     }
     
     //free memory
-    if(selector2 != NULL) {oslDeleteImage(selector2); selector2 = NULL;}
+    if(selector != NULL) {oslDeleteImage(selector); selector = NULL;}
     if(background != NULL){oslDeleteImage(background); background = NULL;}
     
     return;
@@ -268,11 +431,9 @@ void MENU::BuyLives()
 
 void MENU::UpgradeCharacter()
 {
-    OSL_IMAGE * selector2;
-    OSL_IMAGE * background;
-        
-    int menuChoice = 1;
-    selector2 = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
+    cost = 99999;
+    menuChoice = 1;
+    selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
     background = oslLoadImageFilePNG((char*)"img/data/customize5.png", OSL_IN_RAM, OSL_PF_5551);
     
     //menu macros
@@ -293,34 +454,38 @@ void MENU::UpgradeCharacter()
         if(menuChoice < 1) menuChoice = 5;
         
         if(menuChoice == UPGRADE_HEALTH){
-		    placeSelector(selector2, 19,116);
-		    if(osl_keys->pressed.cross) {oslPlaySound(select, 2);}                      
+		    placeSelector(selector, 19,116);
+		    if(osl_keys->pressed.cross) {oslPlaySound(bought, 2);}   
+            else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                        
 		}
         
         else if(menuChoice == UPGRADE_ATTACK){
-			placeSelector(selector2, 19, 148);
-			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			placeSelector(selector, 19, 148);
+			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}	
 		
 		else if(menuChoice == UPGRADE_JUMP_HEIGHT){
-			placeSelector(selector2, 20, 177);
-			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			placeSelector(selector, 20, 177);
+			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		  
 		else if(menuChoice == UPGRADE_MAX_POWER){
-			placeSelector(selector2, 20, 205);
-			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
+			placeSelector(selector, 20, 205);
+			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selector2, 20, 232);
-			if(osl_keys->pressed.cross){oslPlaySound(select, 2); break;}
+			placeSelector(selector, 20, 232);
+			if(osl_keys->pressed.cross){oslPlaySound(bought, 2); break;}  
 		}
 		
         oslStartDrawing();
         oslClearScreen(BLACK);
         oslDrawImage(background);
-        oslDrawImage(selector2);
+        oslDrawImage(selector);
         
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
@@ -330,7 +495,7 @@ void MENU::UpgradeCharacter()
     }
     
     //free memory
-    if(selector2 != NULL) {oslDeleteImage(selector2); selector2 = NULL;}
+    if(selector != NULL) {oslDeleteImage(selector); selector = NULL;}
     if(background != NULL){oslDeleteImage(background); background = NULL;}
     
     return;
@@ -341,9 +506,9 @@ void MENU::BuyCharacters()
     OSL_IMAGE * backgroundBC, *background2BC, *background3BC, *background4BC, *selectBC, *lock1, *lock2,
     *lock3, *lock4, *lock5, *lock6, *lock7, *lock8;
     
-    int choice = 1;
+    menuChoice = 1;
     int pageOn = 1;
-    int cost = 0;
+    cost = 0;
     
     //load and configure images
     selectBC = oslLoadImageFilePNG((char*)"img/data/sqselector.png", OSL_IN_RAM, OSL_PF_5551);
@@ -386,23 +551,23 @@ void MENU::BuyCharacters()
         else if(osl_keys->pressed.R && pageOn < 4){oslPlaySound(select, 2); pageOn++;}
         else if(osl_keys->pressed.L && pageOn > 1){oslPlaySound(select, 2); pageOn--;}
         
-        else if(osl_keys->pressed.right){oslPlaySound(select, 2); choice++; }
-        else if(osl_keys->pressed.left) {oslPlaySound(select, 2); choice--; }
+        else if(osl_keys->pressed.right && menuChoice < 8){oslPlaySound(select, 2); menuChoice++; }
+        else if(osl_keys->pressed.left && menuChoice > 1) {oslPlaySound(select, 2); menuChoice--; }
         
-        else if(osl_keys->pressed.down && choice == 1){oslPlaySound(select, 2); choice = 5;}
-        else if(osl_keys->pressed.down && choice == 2){oslPlaySound(select, 2); choice = 6;}
-        else if(osl_keys->pressed.down && choice == 3){oslPlaySound(select, 2); choice = 7;}
-        else if(osl_keys->pressed.down && choice == 4){oslPlaySound(select, 2); choice = 8;}
+        else if(osl_keys->pressed.down && menuChoice == 1){oslPlaySound(select, 2); menuChoice = 5;}
+        else if(osl_keys->pressed.down && menuChoice == 2){oslPlaySound(select, 2); menuChoice = 6;}
+        else if(osl_keys->pressed.down && menuChoice == 3){oslPlaySound(select, 2); menuChoice = 7;}
+        else if(osl_keys->pressed.down && menuChoice == 4){oslPlaySound(select, 2); menuChoice = 8;}
         
-        else if(osl_keys->pressed.up && choice == 5){oslPlaySound(select, 2); choice = 1;}
-        else if(osl_keys->pressed.up && choice == 6){oslPlaySound(select, 2); choice = 2;}
-        else if(osl_keys->pressed.up && choice == 7){oslPlaySound(select, 2); choice = 3;}
-        else if(osl_keys->pressed.up && choice == 8){oslPlaySound(select, 2); choice = 4;}
+        else if(osl_keys->pressed.up && menuChoice == 5){oslPlaySound(select, 2); menuChoice = 1;}
+        else if(osl_keys->pressed.up && menuChoice == 6){oslPlaySound(select, 2); menuChoice = 2;}
+        else if(osl_keys->pressed.up && menuChoice == 7){oslPlaySound(select, 2); menuChoice = 3;}
+        else if(osl_keys->pressed.up && menuChoice == 8){oslPlaySound(select, 2); menuChoice = 4;}
         
-		if(choice > 8) choice = 1;
-        if(choice < 1) choice = 8;
+		if(menuChoice > 8) menuChoice = 1;
+        if(menuChoice < 1) menuChoice = 8;
         
-        if(choice == 1)
+        if(menuChoice == 1)
         {
 		    placeSelector(selectBC, 28,75); 
 		    
@@ -410,32 +575,36 @@ void MENU::BuyCharacters()
               cost = 0;
 		      if(osl_keys->pressed.cross && player.money >= cost && menu.DUDE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(DUDE); menu.DUDE_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.DUDE_bought == true){oslPlaySound(bought, 7); player.SetUp(DUDE);}                                }
+              else if(osl_keys->pressed.cross && menu.DUDE_bought == true){oslPlaySound(bought, 7); player.SetUp(DUDE);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                                  }
             
             else if(pageOn == 2){  
               cost = 2400;
 		      if(osl_keys->pressed.cross && player.money >= cost && menu.ATLANTIS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ATLANTIS); menu.ATLANTIS_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.ATLANTIS_bought == true){oslPlaySound(bought, 7); player.SetUp(ATLANTIS);}                    
+              else if(osl_keys->pressed.cross && menu.ATLANTIS_bought == true){oslPlaySound(bought, 7); player.SetUp(ATLANTIS);}    
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                      
             }   
             
             else if(pageOn == 3){  
               cost = 12000;
 		      if(osl_keys->pressed.cross && player.money >= cost && menu.WEAK_WRAITH_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(WEAK_WRAITH); menu.WEAK_WRAITH_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.WEAK_WRAITH_bought == true){oslPlaySound(bought, 7); player.SetUp(WEAK_WRAITH);}                    
+              else if(osl_keys->pressed.cross && menu.WEAK_WRAITH_bought == true){oslPlaySound(bought, 7); player.SetUp(WEAK_WRAITH);}      
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                       
             }      
             
             else if(pageOn == 4){  
               cost = 35000;
 		      if(osl_keys->pressed.cross && player.money >= cost && menu.FOURTH_ELDER_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(FOURTH_ELDER); menu.FOURTH_ELDER_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.FOURTH_ELDER_bought == true){oslPlaySound(bought, 7); player.SetUp(FOURTH_ELDER);}                    
+              else if(osl_keys->pressed.cross && menu.FOURTH_ELDER_bought == true){oslPlaySound(bought, 7); player.SetUp(FOURTH_ELDER);}     
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                   
             }  
             
 		}
 		
-		else if(choice == 2)
+		else if(menuChoice == 2)
         {
 		    placeSelector(selectBC, 131,75); 
 		    
@@ -444,6 +613,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.SATHE_NORMAL_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(SATHE_NORMAL); menu.SATHE_NORMAL_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.SATHE_NORMAL_bought == true){oslPlaySound(bought, 7); player.SetUp(SATHE_NORMAL);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }
             
             else if(pageOn == 2){  
@@ -451,6 +621,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.VEXUS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(VEXUS); menu.VEXUS_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.VEXUS_bought == true){oslPlaySound(bought, 7); player.SetUp(VEXUS);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
             }
             
             else if(pageOn == 3){  
@@ -458,6 +629,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.WRAITH_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(WRAITH); menu.WRAITH_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.WRAITH_bought == true){oslPlaySound(bought, 7); player.SetUp(WRAITH);} 
+             else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }
             
             else if(pageOn == 4){  
@@ -465,11 +637,12 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.FIFTH_ELDER_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(FIFTH_ELDER); menu.FIFTH_ELDER_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.FIFTH_ELDER_bought == true){oslPlaySound(bought, 7); player.SetUp(FIFTH_ELDER);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);        
             }
                                  
 		}
 		
-		else if(choice == 3)
+		else if(menuChoice == 3)
         {
 		    placeSelector(selectBC, 234,75);              
             
@@ -478,6 +651,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.REPUBLIKEN_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(REPUBLIKEN); menu.REPUBLIKEN_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.REPUBLIKEN_bought == true){oslPlaySound(bought, 7); player.SetUp(REPUBLIKEN);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);        
             }  
             
             else if(pageOn == 2){  
@@ -485,6 +659,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.ZAMUS_NORMAL_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ZAMUS_NORMAL); menu.ZAMUS_NORMAL_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.ZAMUS_NORMAL_bought == true){oslPlaySound(bought, 7); player.SetUp(ZAMUS_NORMAL);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }      
             
             else if(pageOn == 3){  
@@ -492,6 +667,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.KRITH_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(KRITH); menu.KRITH_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.KRITH_bought == true){oslPlaySound(bought, 7); player.SetUp(KRITH);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }  
             
             else if(pageOn == 4){  
@@ -499,43 +675,48 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.SIXTH_ELDER_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(SIXTH_ELDER); menu.SIXTH_ELDER_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.SIXTH_ELDER_bought == true){oslPlaySound(bought, 7); player.SetUp(SIXTH_ELDER);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }  
 		}
 		
-		else if(choice == 4)
+		else if(menuChoice == 4)
         {
 		    placeSelector(selectBC, 338,75); 
 		    
 		    if(pageOn == 1){  
-              cost = 875;
+              cost = 870;
               if(osl_keys->pressed.cross && player.money >= cost && menu.ORRE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ORRE); menu.ORRE_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.ORRE_bought == true){oslPlaySound(bought, 7); player.SetUp(ORRE);}      
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
             }     
             
             else if(pageOn == 2){  
               cost = 5800;
               if(osl_keys->pressed.cross && player.money >= cost && menu.SUPER_SATHE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(SUPER_SATHE); menu.SUPER_SATHE_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.SUPER_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(SUPER_SATHE);}      
+              else if(osl_keys->pressed.cross && menu.SUPER_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(SUPER_SATHE);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);            
             }      
             
             else if(pageOn == 3){  
               cost = 16000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.ULTRA_SATHE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ULTRA_SATHE); menu.ULTRA_SATHE_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.ULTRA_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(ULTRA_SATHE);}      
+              else if(osl_keys->pressed.cross && menu.ULTRA_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(ULTRA_SATHE);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);         
             }    
             
             else if(pageOn == 4){  
               cost = 100000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.ELDER_SATHE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ELDER_SATHE); menu.ELDER_SATHE_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.ELDER_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(ELDER_SATHE);}      
+              else if(osl_keys->pressed.cross && menu.ELDER_SATHE_bought == true){oslPlaySound(bought, 7); player.SetUp(ELDER_SATHE);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);           
             }      
 		}
 		
-		else if(choice == 5)
+		else if(menuChoice == 5)
         {
 		    placeSelector(selectBC, 28,169); 
 		    
@@ -544,6 +725,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.BARON_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(BARON); menu.BARON_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.BARON_bought == true){oslPlaySound(bought, 7); player.SetUp(BARON);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }       
             
             else if(pageOn == 2){  
@@ -551,13 +733,15 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.GENAMI_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(GENAMI); menu.GENAMI_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.GENAMI_bought == true){oslPlaySound(bought, 7); player.SetUp(GENAMI);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);        
             }     
             
             else if(pageOn == 3){  
               cost = 11000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.ULTRA_ZAMUS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ULTRA_ZAMUS); menu.ULTRA_ZAMUS_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.ULTRA_ZAMUS_bought == true){oslPlaySound(bought, 7); player.SetUp(ULTRA_ZAMUS);}   
+              else if(osl_keys->pressed.cross && menu.ULTRA_ZAMUS_bought == true){oslPlaySound(bought, 7); player.SetUp(ULTRA_ZAMUS);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);          
             }  
             
             else if(pageOn == 4){  
@@ -565,10 +749,11 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.ETHAS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ETHAS); menu.ETHAS_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.ETHAS_bought == true){oslPlaySound(bought, 7); player.SetUp(ETHAS);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }  
 		} 
 		
-		else if(choice == 6)
+		else if(menuChoice == 6)
         {
 		    placeSelector(selectBC, 131,169); 
 	        
@@ -576,14 +761,17 @@ void MENU::BuyCharacters()
               cost = 2000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.BLADE_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(BLADE); menu.BLADE_bought = true; player.money -= cost;} 
-              else if(osl_keys->pressed.cross && menu.BLADE_bought == true){oslPlaySound(bought, 7); player.SetUp(BLADE);}   
-            }     
+               else if(osl_keys->pressed.cross && menu.BLADE_bought == true){oslPlaySound(bought, 7); player.SetUp(BLADE);}   
+               else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
+            }  
+               
             
             else if(pageOn == 2){  
               cost = 8000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.ORPHEUS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(ORPHEUS); menu.ORPHEUS_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.ORPHEUS_bought == true){oslPlaySound(bought, 7); player.SetUp(ORPHEUS);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }       
             
             else if(pageOn == 3){  
@@ -591,21 +779,22 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.KROM_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(KROM); menu.KROM_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.KROM_bought == true){oslPlaySound(bought, 7); player.SetUp(KROM);}   
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);         
             }     
             
             else if(pageOn == 4){}     
 		}
 		
-		else if(choice == 7)
+		else if(menuChoice == 7)
         {
-		    placeSelector(selectBC, 234,169); 
-		    if(osl_keys->pressed.cross) {oslPlaySound(bought, 7); player.SetUp(RYAN);}      
+		    placeSelector(selectBC, 234,169);   
             
             if(pageOn == 1){       
               cost = 2500;
               if(osl_keys->pressed.cross && player.money >= cost && menu.RYAN_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(RYAN); menu.RYAN_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.RYAN_bought == true){oslPlaySound(bought, 7); player.SetUp(RYAN);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }      
             
             else if(pageOn == 2){       
@@ -613,6 +802,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.SATHIMUS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(SATHIMUS); menu.SATHIMUS_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.SATHIMUS_bought == true){oslPlaySound(bought, 7); player.SetUp(SATHIMUS);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
             }      
             
             else if(pageOn == 3){       
@@ -620,12 +810,13 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.SATHIS_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(SATHIS); menu.SATHIS_bought = true; player.money -= cost;} 
               else if(osl_keys->pressed.cross && menu.SATHIS_bought == true){oslPlaySound(bought, 7); player.SetUp(SATHIS);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);        
             }       
             
             else if(pageOn == 4){}         
 		}
 		
-		else if(choice == 8)
+		else if(menuChoice == 8)
         {
 		    placeSelector(selectBC, 338,169); 
             
@@ -633,14 +824,16 @@ void MENU::BuyCharacters()
               cost = 3400;
               if(osl_keys->pressed.cross && player.money >= cost && menu.EARTH_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(EARTH); menu.EARTH_bought = true; player.money -= cost;}
-              else if(osl_keys->pressed.cross && menu.EARTH_bought == true){oslPlaySound(bought, 7); player.SetUp(EARTH);}       
+              else if(osl_keys->pressed.cross && menu.EARTH_bought == true){oslPlaySound(bought, 7); player.SetUp(EARTH);} 
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);            
             }
             
             else if(pageOn == 2){    
               cost = 10000;
               if(osl_keys->pressed.cross && player.money >= cost && menu.WEAK_KROM_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(WEAK_KROM); menu.WEAK_KROM_bought = true; player.money -= cost;}
-              else if(osl_keys->pressed.cross && menu.WEAK_KROM_bought == true){oslPlaySound(bought, 7); player.SetUp(WEAK_KROM);}       
+              else if(osl_keys->pressed.cross && menu.WEAK_KROM_bought == true){oslPlaySound(bought, 7); player.SetUp(WEAK_KROM);}  
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);           
             }
             
             else if(pageOn == 3){    
@@ -648,6 +841,7 @@ void MENU::BuyCharacters()
               if(osl_keys->pressed.cross && player.money >= cost && menu.PHALEM_bought == false) 
               {oslPlaySound(bought, 7); player.SetUp(PHALEM); menu.PHALEM_bought = true; player.money -= cost;}
               else if(osl_keys->pressed.cross && menu.PHALEM_bought == true){oslPlaySound(bought, 7); player.SetUp(PHALEM);}       
+              else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);      
             }
             
             else if(pageOn == 4){}    
@@ -706,7 +900,7 @@ void MENU::BuyCharacters()
         }
         
         //display player money
-        oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
+        oslSetTextColor(WHITE); oslPrintf_xy(240, 40, "Player money left: $%lld", player.money);
         
         oslEndDrawing();
         oslSyncFrame();

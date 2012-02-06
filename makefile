@@ -1,4 +1,4 @@
-#compile main.cpp:
+#compile main.cpp and load.o and save.o logo.png:
 TARGET = Epic_Sathe
 OBJS = source/main.o
 
@@ -23,15 +23,15 @@ LIBS=$(STDLIBS) $(MYLIBS)
 #EBOOT TITLE: Epic Sathe
 #EBOOT ICON:  ICON0.png
 #EBOOT PIC1:  PIC1.png
-#EBOOT ATR3: (null)
+#EBOOT ATR3:  SND0.at3
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = Epic Sathe
 PSP_EBOOT_ICON = resource/ICON0.png
 PSP_EBOOT_PIC1 = resource/PIC1.png
+PSP_EBOOT_SND0 = resource/SND0.at3
 
 #locate build.mak
 PSPSDK=$(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
-	
 	
 #V@ughn

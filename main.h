@@ -1,3 +1,4 @@
+#include <pspkernel.h>
 #include <oslib/oslib.h>
 
 /*Wait; will pause the screen for 3 seconds*/
@@ -15,18 +16,17 @@
 #define ATTACKING_LEFT 380
 #define JUMPING 456
 #define GUARDING_LEFT 532
-#define STILL_LEFT 708
+#define STILL_LEFT 546
 
 /* normal psp calls */
 PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1024);
+PSP_HEAP_SIZE_KB(-2024);
 
 /* menu macros */
-#define START_GAME 1
-#define CUSTOMIZE 2
-#define CREDITS 3
-#define EXIT_GAME 4
+#define SHOW_MAIN_MENU 1
+#define SHOW_SECOND_MENU 2
+#define EXIT 0
 
 /* effect macros */
 #define BLOWN_BACK_RIGHT 893
@@ -70,10 +70,10 @@ PSP_HEAP_SIZE_KB(-1024);
 
 /* global OSL_SOUND and OSL_IMAGE variables */
 OSL_SOUND *menu_music, *select, *scream, *groan, *punch1, *punch2, *hard_punch, *soft_punch, *confuse,
-*stun, *powerup, *smashFist, *battle1, *battle2, *battle3, *battle4, *groan2, *bought;
+*stun, *powerup, *smashFist, *battle1, *battle2, *battle3, *battle4, *groan2, *bought, *battle5, *error,
+*powerUp;
 
-OSL_IMAGE *menu_background, *selector, *level, *cloud1, *cloud2, *cloud3, *cloud4, *cloud5, *cloud6,
-*cloud7, *cloud8;
+OSL_IMAGE *level, *cloud1, *cloud2, *cloud3, *cloud4, *cloud5, *cloud6, *cloud7, *cloud8;
 
 /* define our color set for easy use */
 enum colors 
@@ -121,13 +121,16 @@ int MAIN_GAME();
 
 void VAUGHN_LOGO( void );
 
-void showCredits( void );
+#include "classes/stats.h"
 
-/* include other headers */
 #include "classes/player.h"
 
 #include "classes/enemy.h"
 
+#include "classes/multiplayer.h"
+
 #include "classes/menu.h"
 
 #include "classes/level.h"
+
+

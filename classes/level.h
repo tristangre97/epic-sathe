@@ -126,22 +126,22 @@ void LEVEL::MANUALLY_CODED_LEVELS()
         }
         
         /* stop any possible playing music */
-        oslStopSound(battle2); oslStopSound(battle3);
+        oslStopSound(battle2); oslStopSound(battle3); oslStopSound(battle4); oslStopSound(battle5);
         
-        /* set music for new level */
         if(currentLevel <= 10){oslPlaySound(battle3, 1);}
         else if(currentLevel > 10 && currentLevel <= 20)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 20 && currentLevel <= 30)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 30 && currentLevel <= 40)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 40 && currentLevel <= 50)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
+        else if(currentLevel > 30 && currentLevel <= 40)  {oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 40 && currentLevel <= 50)  {oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
         else if(currentLevel > 50 && currentLevel <= 60)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 60 && currentLevel <= 70)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 70 && currentLevel <= 80)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 80 && currentLevel <= 90)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
+        else if(currentLevel > 70 && currentLevel <= 80)  {oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 80 && currentLevel <= 90)  {oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
         else if(currentLevel > 90 && currentLevel <= 100) {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 100 && currentLevel <= 110){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 110 && currentLevel <= 120){oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 120 && currentLevel <= 130){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}else if(currentLevel > 50 && currentLevel <= 60){oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
+        else if(currentLevel > 110 && currentLevel <= 120){oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 120 && currentLevel <= 130){oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
+        else if(currentLevel > 50 && currentLevel <= 60)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 130 && currentLevel <= 140){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
         else oslPlaySound(battle3, 1);
     }
@@ -201,6 +201,16 @@ void LEVEL::UPDATER()
         cloud8->x++;
         if(cloud8->x > 500) cloud8->x = 0;
     }
+    
+    oslDrawImage(level);
+    if(cloud1 != NULL) oslDrawImageSimple(cloud1); 
+    if(cloud2 != NULL) oslDrawImageSimple(cloud2); 
+    if(cloud3 != NULL) oslDrawImageSimple(cloud3); 
+    if(cloud4 != NULL) oslDrawImageSimple(cloud4); 
+    if(cloud5 != NULL) oslDrawImageSimple(cloud5); 
+    if(cloud6 != NULL) oslDrawImageSimple(cloud6); 
+    if(cloud7 != NULL) oslDrawImageSimple(cloud7); 
+    if(cloud8 != NULL) oslDrawImageSimple(cloud8); 
     
     /****************************************handle enemies if they are alive*********************************/
         if(enemy1.alive){
@@ -460,21 +470,22 @@ void LEVEL::COMPUTER_GENERATED_LEVELS()
         currentLevel++; 
         spawned = 0;
         
-        oslStopSound(battle2); oslStopSound(battle3);
+        oslStopSound(battle2); oslStopSound(battle3); oslStopSound(battle4); oslStopSound(battle5);
         
         if(currentLevel <= 10){oslPlaySound(battle3, 1);}
         else if(currentLevel > 10 && currentLevel <= 20)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 20 && currentLevel <= 30)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 30 && currentLevel <= 40)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 40 && currentLevel <= 50)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
+        else if(currentLevel > 30 && currentLevel <= 40)  {oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 40 && currentLevel <= 50)  {oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
         else if(currentLevel > 50 && currentLevel <= 60)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 60 && currentLevel <= 70)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 70 && currentLevel <= 80)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 80 && currentLevel <= 90)  {oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
+        else if(currentLevel > 70 && currentLevel <= 80)  {oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 80 && currentLevel <= 90)  {oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
         else if(currentLevel > 90 && currentLevel <= 100) {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 100 && currentLevel <= 110){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
-        else if(currentLevel > 110 && currentLevel <= 120){oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
-        else if(currentLevel > 120 && currentLevel <= 130){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}else if(currentLevel > 50 && currentLevel <= 60){oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
+        else if(currentLevel > 110 && currentLevel <= 120){oslPlaySound(battle4, 1); oslSetSoundLoop(battle4, 1);}
+        else if(currentLevel > 120 && currentLevel <= 130){oslPlaySound(battle5, 1); oslSetSoundLoop(battle5, 1);}
+        else if(currentLevel > 50 && currentLevel <= 60)  {oslPlaySound(battle2, 1); oslSetSoundLoop(battle2, 1);}
         else if(currentLevel > 130 && currentLevel <= 140){oslPlaySound(battle3, 1); oslSetSoundLoop(battle3, 1);}
         else oslPlaySound(battle3, 1);
     }
