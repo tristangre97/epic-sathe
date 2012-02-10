@@ -191,6 +191,41 @@ OSL_IMAGE * STATS::SetImage(const short id)
     OSL_IMAGE * image = NULL;
     
     if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf1.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == DUDE)              image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == SATHE_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == REPUBLIKEN)   image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ORRE)         image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == BARON)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == BLADE)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == RYAN)         image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == EARTH)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ATLANTIS)     image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == VEXUS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ZAMUS_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == SUPER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == GENAMI)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ORPHEUS)      image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == SATHIMUS)     image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == WEAK_KROM)    image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == WEAK_WRAITH)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == WRAITH)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == KRITH)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ULTRA_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ULTRA_ZAMUS)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == KROM)         image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == SATHIS)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == PHALEM)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == FOURTH_ELDER) image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == FIFTH_ELDER)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == SIXTH_ELDER)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ELDER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == ETHAS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else oslFatalError("ERROR! INVALID PARAMETER PASSED TO OSL_IMAGE * loadImage(const short id)!!");
+
+    return image;
+}
+/*
+if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf1.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == DUDE)              image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == SATHE_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == REPUBLIKEN)   image = oslLoadImageFilePNG((char*)"img/fighters/REPUBLIKEN.png", OSL_IN_RAM, OSL_PF_5551);
@@ -221,6 +256,4 @@ OSL_IMAGE * STATS::SetImage(const short id)
     else if(id == ELDER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == ETHAS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else oslFatalError("ERROR! INVALID PARAMETER PASSED TO OSL_IMAGE * loadImage(const short id)!!");
-
-    return image;
-}
+*/

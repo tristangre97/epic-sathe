@@ -33,14 +33,16 @@ int MAIN_GAME()
         
         
         //handle player
-        player.ReadKeys(player.image);
-        player.Handle(player.image);
+        player.ReadKeys();
+        player.Handle();
         
-        oslSetTextColor(BLACK); oslPrintf_xy(player.image->x, player.image->y -5, "Hp: %lld", player.health);
-        oslSetTextColor(YELLOW); oslPrintf_xy(5, 35, "Power: %lld/%lld", player.power, player.maxPower);
-        oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", currentLevel, totalNum);
-        oslSetTextColor(BLACK); oslPrintf_xy(5, 15, "%d live(s) left", player.lives);
-        oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld money", player.money);
+        if(!player.toggle) {
+          oslSetTextColor(BLACK); oslPrintf_xy(player.image->x, player.image->y -5, "Hp: %lld", player.health);
+          oslSetTextColor(YELLOW); oslPrintf_xy(5, 35, "Power: %lld/%lld", player.power, player.maxPower);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", currentLevel, totalNum);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 15, "%d lives left", player.lives);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
+        }
         
         oslEndDrawing();
         oslSyncFrame();
@@ -106,8 +108,7 @@ int main(int argc, char* argv[])
     
     int status = SHOW_MAIN_MENU;
     
-    while(1)
-	{  
+    while(1) {  
        if(status == SHOW_MAIN_MENU) status = menu.MainMenu();
        
        else if(status == SHOW_SECOND_MENU) status = menu.SecondaryMenu();

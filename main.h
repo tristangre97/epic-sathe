@@ -9,14 +9,14 @@
 
 /* sprite positions */
 #define STILL_RIGHT 0
-#define GUARDING_RIGHT 76
-#define RIGHT 152
-#define LEFT 228
-#define ATTACKING_RIGHT 304
-#define ATTACKING_LEFT 380
-#define JUMPING 456
-#define GUARDING_LEFT 532
-#define STILL_LEFT 546
+#define GUARDING_RIGHT 54
+#define RIGHT 108
+#define LEFT 161
+#define ATTACKING_RIGHT 214
+#define ATTACKING_LEFT 268
+#define JUMPING 322
+#define GUARDING_LEFT 378
+#define STILL_LEFT 432
 
 /* normal psp calls */
 PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
@@ -65,7 +65,7 @@ PSP_HEAP_SIZE_KB(-2024);
 #define ETHAS 28
 
 /* other macros */
-#define GROUND 160
+#define GROUND 234
 #define LAST_LEVEL 8
 
 /* global OSL_SOUND and OSL_IMAGE variables */

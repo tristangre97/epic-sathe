@@ -157,7 +157,7 @@ int MENU::SecondaryMenu()
 {
     menuChoice = 1;
     background = oslLoadImageFilePNG((char*)"img/data/menu2.png", OSL_IN_RAM, OSL_PF_5551);
-    selector = oslLoadImageFilePNG((char*)"img/data/selector.png", OSL_IN_RAM, OSL_PF_5551);  
+    selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);  
     
     #define SOLO_MODE 1
     #define LOAD_OLD_STATS 2
@@ -175,27 +175,27 @@ int MENU::SecondaryMenu()
         if(menuChoice < 1) menuChoice = 5;
 		
 		if(menuChoice == SOLO_MODE){
-		  placeSelector(selector, 19,104);
+		  placeSelector(selector, 19,106);
 		  if(osl_keys->pressed.cross) {oslPlaySound(select, 2); MAIN_GAME(); return SHOW_MAIN_MENU;}                      
 		}
         
         else if(menuChoice == LOAD_OLD_STATS){
-		  placeSelector(selector, 19, 141);
+		  placeSelector(selector, 19, 142);
 		  if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
 		}	
 		
 		else if(menuChoice == BOSS_MODE){
-		  placeSelector(selector, 19, 175);
+		  placeSelector(selector, 19, 176);
 		  if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
 		}
 		  
 		else if(menuChoice == MULTIPLAYER){
-		  placeSelector(selector, 19, 212);
+		  placeSelector(selector, 19, 213);
 	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); online.InitAdhocGame(); return SHOW_MAIN_MENU;}
 		}
 		
 		else if(menuChoice == BACK){
-		  placeSelector(selector, 19, 248);
+		  placeSelector(selector, 19, 249);
 	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return SHOW_MAIN_MENU;}
 		}
 		  

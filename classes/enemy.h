@@ -60,16 +60,13 @@ class ENEMY : public STATS
 inline void ENEMY::Handle(OSL_IMAGE * image, long long &health, long long &attack, long long &power, long long maxPower, bool &touchingGround, bool &attacking, int &sy, short &position, int &special)
 {
     //keep enemy in the screen
-    if(image->x > 450)   image->x = 450;
+    if(image->x > 440)   image->x = 440;
     if(image->x < -10)   image->x = -10;
-    
-    //add player power
-    if(power < maxPower)power++;
     
     //gravity
     image->y+=sy;
-    if(image->y > GROUND) image->y = GROUND;
-    if(image->y != GROUND){touchingGround = false; sy++;}
+    if(image->y > (GROUND - image->stretchY)) image->y = (GROUND - image->stretchY);
+    if(image->y != (GROUND - image->stretchY)){touchingGround = false; sy++;}
     else touchingGround = true;
     
     //show enemy health
@@ -179,7 +176,7 @@ inline void ENEMY::SpriteAnimate(OSL_IMAGE * image, short &manipulate, short &ma
     //Moves the sprite in the row that it is in
     manipulate++; if(manipulate > 10) {march++; manipulate = 0;}
     
-    oslSetImageTileSize(image,(march * 53),position,53,76);
+    oslSetImageTileSize(image,(march * 53),position,53,53);
     
     if (march == 3) march = 0;
 
