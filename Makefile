@@ -1,4 +1,4 @@
-#compile main.cpp and load.o and save.o logo.png:
+#compile main.cpp:
 TARGET = Epic_Sathe
 OBJS = source/main.o
 
@@ -6,17 +6,17 @@ OBJS = source/main.o
 BUILD_PRX = 1
 PSP_FW_VERSION=371
 
-#set CFLAGS to -G0 (do not set to -G4 or -G2)
-CFLAGS = -G0 -Wall -O2 -g
+#set FLAGS
+CFLAGS = -G2 -Wall -O2 -g
 CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS)
 LIBDIR =
 LDFLAGS =
 
 #linked libraries
-STDLIBS= -losl -lpng -lz \
-         -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu -lpspgum  -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan \
-         -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl -lm -ljpeg
+MYLIBS= -lpspnet_adhocmatching -lpspnet_adhoc -lpspnet_adhocctl 
+STDLIBS= -losl -lpng -lz -lpsphprm -lpspsdk -lpspctrl -lpspumd -lpsprtc -lpsppower -lpspgu \
+-lpspgum -lpspaudiolib -lpspaudio -lpsphttp -lpspssl -lpspwlan -lm -ljpeg
 LIBS=$(STDLIBS) $(MYLIBS)
 
 #OUTPUT FILE: EBOOT.PBP
@@ -33,5 +33,5 @@ PSP_EBOOT_SND0 = resource/SND0.at3
 #locate build.mak
 PSPSDK=$(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
-	
+
 #V@ughn

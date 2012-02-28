@@ -1,4 +1,3 @@
-#include <pspkernel.h>
 #include <oslib/oslib.h>
 
 /*Wait; will pause the screen for 3 seconds*/
@@ -7,77 +6,29 @@
 /*Wait; will pause the screen for 0.5 seconds*/
 #define hWait sceKernelDelayThread(500000);
 
-/* sprite positions */
-#define STILL_RIGHT 0
-#define GUARDING_RIGHT 54
-#define RIGHT 108
-#define LEFT 161
-#define ATTACKING_RIGHT 214
-#define ATTACKING_LEFT 268
-#define JUMPING 322
-#define GUARDING_LEFT 378
-#define STILL_LEFT 432
-
 /* normal psp calls */
 PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-2024);
+PSP_HEAP_SIZE_KB(-1024);
 
 /* menu macros */
 #define SHOW_MAIN_MENU 1
 #define SHOW_SECOND_MENU 2
 #define EXIT 0
 
-/* effect macros */
-#define BLOWN_BACK_RIGHT 893
-#define BLOWN_BACK_LEFT 793
-#define NOTHING 0
-
-/* define fighter ID's */
-#define DUDE 0
-#define SATHE_NORMAL 1
-#define REPUBLIKEN 2
-#define ORRE 3
-#define BARON 4
-#define BLADE 5
-#define RYAN 6
-#define EARTH 7
-#define ATLANTIS 8
-#define VEXUS 9
-#define ZAMUS_NORMAL 10
-#define SUPER_SATHE 11
-#define GENAMI 12
-#define ORPHEUS 13
-#define SATHIMUS 14
-#define WEAK_KROM 15
-#define WEAK_WRAITH 16
-#define WRAITH 17
-#define KRITH 18
-#define ULTRA_SATHE 19
-#define ULTRA_ZAMUS 20
-#define KROM 21
-#define SATHIS 22
-#define PHALEM 23
-#define FOURTH_ELDER 24
-#define FIFTH_ELDER 25
-#define SIXTH_ELDER 26
-#define ELDER_SATHE 27
-#define ETHAS 28
-
-/* other macros */
-#define GROUND 234
-#define LAST_LEVEL 8
+typedef OSL_IMAGE IMAGE;
+typedef OSL_SOUND SOUND;
+typedef OSL_FONT FONT;
 
 /* global OSL_SOUND and OSL_IMAGE variables */
-OSL_SOUND *menu_music, *select, *scream, *groan, *punch1, *punch2, *hard_punch, *soft_punch, *confuse,
-*stun, *powerup, *smashFist, *battle1, *battle2, *battle3, *battle4, *groan2, *bought, *battle5, *error,
-*powerUp;
+SOUND *menu_music, *select, *scream, *groan, *punch1, *punch2, *hard_punch, *soft_punch, *confuse,
+*stun, *smashFist, *battle1, *battle2, *battle3, *battle4, *groan2, *bought, *battle5, *error,
+*nextLevelSound;
 
-OSL_IMAGE *level, *cloud1, *cloud2, *cloud3, *cloud4, *cloud5, *cloud6, *cloud7, *cloud8;
+IMAGE *level, *cloud1, *cloud2, *cloud3, *cloud4, *cloud5, *cloud6, *cloud7, *cloud8;
 
 /* define our color set for easy use */
-enum colors 
-{
+enum colors {
     RED          = 0xFF0000FF,
 	GREEN        = 0xFF00FF00,
 	BLUE         = 0xFFFF0000,
@@ -97,40 +48,62 @@ enum colors
     YELLOW       = 0xFF00FFFF,
 };
 
+
+/************************* GLOBALS ********************************/
 //keeps track of the level the player is on
 int currentLevel = 1;
+int currentBossLevel = 1;
+int trackLevel = currentBossLevel;
 
 //checks to see if the level was loaded already
 int spawned = 0;
 int totalNum = 0;
-        
+/************************* GLOBALS ********************************/
+
+
 /* very simple function.... decided to just place it here */
 inline void placeSelector(OSL_IMAGE * image, int x, int y)
-{
-    image->x = x;
-    image->y = y;
-}
+{ image->x = x; image->y = y; }
 
 int collision(OSL_IMAGE *img1,float img1posX, float img1posY, OSL_IMAGE *img2, float img2posX, float img2posY );
 
-void pauseGame( void );
-
 void HANDLE_GAME();
 
-int MAIN_GAME();
+void PauseGame( void );
+
+void AnimatePowerUp();
+
+int BOSS_MODE();
+
+int MAIN_GAME(const int MODE);
 
 void VAUGHN_LOGO( void );
 
-#include "classes/stats.h"
+#include "engine/stats.h"
 
-#include "classes/player.h"
+/* had to define here due to linking problems... messy fix I know */
+class Multiplayer : public STATS {
+    public:
+        Multiplayer();
+        ~Multiplayer();
 
-#include "classes/enemy.h"
+        int InitOnlineGame();
+        int InitAdhocGame();
+        
+    private:
+        
+}online;
 
-#include "classes/multiplayer.h"
+#include "engine/player.h"
 
-#include "classes/menu.h"
+#include "engine/io.h"
 
-#include "classes/level.h"
+#include "engine/enemy.h"
 
+#include "engine/menu.h"
 
+#include "engine/level.h"
+
+#include "engine/multiplayer.h"
+
+#include "engine/item.h"
