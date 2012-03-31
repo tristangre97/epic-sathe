@@ -1,125 +1,31 @@
+/**
+ * Epic Sathe v0.5 ~made by V@ughn
+ * -------------------------------
+ * ->2d psp homebrew game
+ *
+ */
+#include <oslib/oslib.h>
+#include <pspkernel.h>
+#include <vector>
+#include <math.h>
+
+/*********
+ Build Id
+**********/
+const char * BUILD_ID = (char*)"v0.5";
+
+/***********************************************************
+ MAX number of enemies that can exist at one time
+ (WARNING the bigger value the slower the game loop becomes)
+************************************************************/
+const int MAX_ENEMIES = 20;
+
+PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+PSP_HEAP_SIZE_KB(-1024);
+
 #include "main.h"
 
-int MAIN_GAME(const int MODE)
-{   
-    //stop menu music
-    oslStopSound(menu_music);
-    
-    //load level background
-    if(level != NULL){oslDeleteImage(level); level = NULL;}
-    level = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
-    
-    //first we have to setup the player for the first time
-    if(player.initialBoot){player.SetUp(DUDE); player.initialBoot = false;}
-    
-    //if its not the first time reset player stats
-    else player.SetUp(player.id);
-    
-    //reset lives
-    if(player.lives <= 0)player.lives = 2;
-    
-    //preparte powerups
-    ITEM powerup;
-    powerup.image = oslLoadImageFilePNG((char*)"img/data/powerup.png", OSL_IN_RAM, OSL_PF_5551);
-    powerup.collected = oslLoadSoundFileWAV((char*)"sounds/powerup.wav", OSL_FMT_NONE);
-    
-    /* solo mode game loop */
-    if(MODE == 0)
-    {
-      while(!player.quit)
-      {
-        oslStartDrawing();
-        oslSetBkColor(RGBA(0,0,0,0)); 
-        oslClearScreen(BLACK);
-        
-        //update game
-        use.UPDATER();
-        
-        if(currentLevel > LAST_LEVEL && spawned == 0) 
-            use.COMPUTER_GENERATED_LEVELS();
-        else 
-            use.MANUALLY_CODED_LEVELS();
-        
-        
-        //update player
-        player.ReadKeys(0, 0);
-        player.Update();
-        if(!player.toggle) {
-          oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", currentLevel, totalNum);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
-        }
-        if(use.nextLevel) 
-        {
-            //play cool effect for next level
-            use.q++;
-            if(use.q > 5){use.i++; use.q = 0;}
-            if(use.i > 2)oslSetTextColor(YELLOW);
-            if(use.i > 4)oslSetTextColor(LIGHTGRAY);
-            if(use.i > 6)oslSetTextColor(BLACK);
-            if(use.i > 8)oslSetTextColor(AZURE);
-            if(use.i > 10)oslSetTextColor(VIOLET);
-            if(use.i > 12)oslSetTextColor(ROSE);
-            if(use.i > 14)oslSetTextColor(ORANGE);
-            if(use.i > 16)oslSetTextColor(CHARTREUSE);
-            if(use.i > 18)oslSetTextColor(SPRING_GREEN);
-            if(use.i > 20)oslSetTextColor(CYAN);
-            if(use.i > 22)oslSetTextColor(MAGENTA);
-            if(use.i > 24)oslSetTextColor(BLUE);
-            if(use.i > 26)oslSetTextColor(WHITE);
-            if(use.i > 28)oslSetTextColor(RED);
-            if(use.i > 30){use.nextLevel = false; use.i = 0; use.q = 0;}
-            oslPrintf_xy(player.image->x, (player.image->y - 10) - use.i, "NEXT LEVEL");
-        }
-        
-        //update items
-        powerup.Update();
-
-        oslEndDrawing();
-        oslSyncFrame();
-      }
-    }
-    
-    /* boss mode game loop */
-    else if(MODE == 1)
-    {
-        while(!player.quit)
-        {
-           oslStartDrawing();
-           oslSetBkColor(RGBA(0,0,0,0)); 
-        
-           //update game
-           use.BOSS_LEVELS();
-        
-           //update player
-           player.ReadKeys(0, 0);
-           player.Update();
-           if(!player.toggle) {
-             oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
-             oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", currentLevel, totalNum);
-             oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
-             oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
-           }
-         }
-    }
-    
-    /* stop any possible playing music */
-    oslStopSound(battle1); 
-    oslStopSound(battle2); 
-    oslStopSound(battle3); 
-    oslStopSound(battle4); 
-    oslStopSound(battle5);
-    
-    //turn menu music back on
-    oslPlaySound(menu_music, 1); 
-    oslSetSoundLoop(menu_music, 1);
-    
-    //reset
-    player.quit = false;
-    
-    return 0;
-}
 
 int main(int argc, char* argv[])
 {
@@ -133,51 +39,348 @@ int main(int argc, char* argv[])
     oslSetTransparentColor(RGB(255,0,255));
     
     /* load sound files */
-    select =     oslLoadSoundFileBGM((char*)"sounds/select.bgm", OSL_FMT_NONE);
-    error =     oslLoadSoundFileWAV((char*)"sounds/error.wav", OSL_FMT_NONE);
-    nextLevelSound =     oslLoadSoundFileWAV((char*)"sounds/nextLevel.wav", OSL_FMT_NONE);
-    bought =     oslLoadSoundFileBGM((char*)"sounds/selected.bgm", OSL_FMT_NONE);
     menu_music = oslLoadSoundFileWAV((char*)"sounds/battle1.wav", OSL_FMT_NONE);
-    groan =      oslLoadSoundFileBGM((char*)"sounds/groan.bgm", OSL_FMT_NONE);
-    groan2 =      oslLoadSoundFileWAV((char*)"sounds/groan2.wav", OSL_FMT_NONE);
-    confuse =    oslLoadSoundFileBGM((char*)"sounds/confuse.bgm", OSL_FMT_NONE);
-    stun =       oslLoadSoundFileBGM((char*)"sounds/stun.bgm", OSL_FMT_NONE);
-    smashFist =  oslLoadSoundFileBGM((char*)"sounds/smashFist.bgm", OSL_FMT_NONE);
+	jump = oslLoadSoundFileWAV((char*)"sounds/jump.wav", OSL_FMT_NONE);
+    confuse = oslLoadSoundFileBGM((char*)"sounds/confuse.bgm", OSL_FMT_NONE);
+    stun = oslLoadSoundFileBGM((char*)"sounds/stun.bgm", OSL_FMT_NONE);
+    smashFist = oslLoadSoundFileBGM((char*)"sounds/smashFist.bgm", OSL_FMT_NONE);
     hard_punch = oslLoadSoundFileBGM((char*)"sounds/hard punch.bgm", OSL_FMT_NONE);
     soft_punch = oslLoadSoundFileBGM((char*)"sounds/soft punch.bgm", OSL_FMT_NONE);
-    punch1 =     oslLoadSoundFileBGM((char*)"sounds/punch1.bgm", OSL_FMT_NONE);
-    punch2 =     oslLoadSoundFileBGM((char*)"sounds/punch2.bgm", OSL_FMT_NONE);
-    battle1 =    oslLoadSoundFileWAV((char*)"sounds/battle1.wav", OSL_FMT_NONE);
-    battle2 =    oslLoadSoundFileWAV((char*)"sounds/battle2.wav", OSL_FMT_NONE);
-    battle3 =    oslLoadSoundFileWAV((char*)"sounds/battle3.wav", OSL_FMT_NONE);
-    battle4 =    oslLoadSoundFileWAV((char*)"sounds/battle4.wav", OSL_FMT_NONE);
-    battle5 =    oslLoadSoundFileWAV((char*)"sounds/battle5.wav", OSL_FMT_NONE);
+    punch1 = oslLoadSoundFileBGM((char*)"sounds/punch1.bgm", OSL_FMT_NONE);
+    punch2 = oslLoadSoundFileBGM((char*)"sounds/punch2.bgm", OSL_FMT_NONE);
+	groan = oslLoadSoundFileBGM((char*)"sounds/groan.bgm", OSL_FMT_NONE);
+    groan2 = oslLoadSoundFileWAV((char*)"sounds/groan2.wav", OSL_FMT_NONE);
     
-    //start playing menu music
+    /* start playing menu music */
     oslPlaySound(menu_music, 1); 
     oslSetSoundLoop(menu_music, 1);
-
-    //Show my logo
+    
+    /* Show V@ughn's logo */
     VAUGHN_LOGO();
     
-    //unlock two characters
+    /* load use::CONTROLLER files */
+    use.nextLevelSound = oslLoadSoundFileWAV((char*)"sounds/nextLevel.wav", OSL_FMT_NONE);
+    use.battle1 = oslLoadSoundFileWAV((char*)"sounds/battle1.wav", OSL_FMT_NONE);
+    use.battle2 = oslLoadSoundFileWAV((char*)"sounds/battle2.wav", OSL_FMT_NONE);
+    use.battle3 = oslLoadSoundFileWAV((char*)"sounds/battle3.wav", OSL_FMT_NONE);
+    use.battle4 = oslLoadSoundFileWAV((char*)"sounds/battle4.wav", OSL_FMT_NONE);
+    use.battle5 = oslLoadSoundFileWAV((char*)"sounds/battle5.wav", OSL_FMT_NONE);
+    use.level = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
+    
+    /* load menu::MENU files */
+    menu.select = oslLoadSoundFileBGM((char*)"sounds/select.bgm", OSL_FMT_NONE);
+    menu.error = oslLoadSoundFileWAV((char*)"sounds/error.wav", OSL_FMT_NONE);
+    menu.bought = oslLoadSoundFileBGM((char*)"sounds/selected.bgm", OSL_FMT_NONE);
+    
+	/* load fonts */
+    oslIntraFontInit(INTRAFONT_CACHE_ALL | INTRAFONT_STRING_UTF8);
+    ltn = oslLoadFontFile("flash0:/font/ltn0.pgf");
+	oslIntraFontSetStyle(ltn, 1.0f,WHITE,WHITE,INTRAFONT_ALIGN_LEFT);
+	oslSetFont(ltn);
+
+    /* by default unlock two characters */
     menu.DUDE_bought = true;
     menu.REPUBLIKEN_bought = true;
     
-    int status = SHOW_MAIN_MENU;
-    
-    while(1) {  
-       if(status == SHOW_MAIN_MENU) status = menu.MainMenu();
+    static int status = SHOW_MAIN_MENU;
+   
+    while(1) 
+	{
+	  if(status == SHOW_MAIN_MENU) status = menu.MainMenu();
        
-       else if(status == SHOW_SECOND_MENU) status = menu.SecondaryMenu();
+	  if(status ==  SHOW_SECOND_MENU) status = menu.SecondaryMenu();
        
-       else if(status == EXIT) break;
+	  if(status ==  EXIT) break;
     }
     
     oslEndGfx();
     sceKernelExitGame();
     
     return 0;
+}
+
+int MAIN_GAME(const int MODE)
+{   
+    /* stop menu music */
+    oslStopSound(menu_music);
+
+	/* setup player */
+    if(player.initialBoot){player.SetUp(DUDE); player.initialBoot = false;}
+    else player.SetUp(player.id);
+    if(player.lives <= 0)player.lives = 2;
+
+    /* create powerups */
+    ITEM powerup;
+    powerup.missed = oslLoadSoundFileWAV((char*)"sounds/error.wav", OSL_FMT_NONE);
+    powerup.image = oslLoadImageFilePNG((char*)"img/data/powerup.png", OSL_IN_RAM, OSL_PF_5551);
+    powerup.collected = oslLoadSoundFileWAV((char*)"sounds/powerup.wav", OSL_FMT_NONE);
+
+	totalNum = 0;
+
+    while(!player.quit)
+    {
+      oslStartDrawing();
+      oslSetBkColor(RGBA(0,0,0,0)); 
+      oslClearScreen(BLACK);
+    
+      //update game
+      use.UPDATER();
+      
+      //update game type
+      if(MODE == 0)
+      {
+        if(use.currentLevel > LAST_LEVEL && use.spawned == 0) 
+            use.COMPUTER_GENERATED_LEVELS();
+        else 
+            use.MANUALLY_CODED_LEVELS();
+      }
+      else if(MODE == 1)
+        use.BOSS_LEVELS(player.quit);
+         
+      //update player
+      player.UpdatePlayer(0, 0);
+      if(!player.toggle) {
+          oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", use.currentLevel, totalNum);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
+      }
+      
+      if(use.nextLevel) {
+          //play cool effect for next level
+          use.q++;
+          if(use.q > 5){use.i++; use.q = 0;}
+          if(use.i > 2)oslSetTextColor(YELLOW);
+          if(use.i > 4)oslSetTextColor(LIGHTGRAY);
+          if(use.i > 6)oslSetTextColor(BLACK);
+          if(use.i > 8)oslSetTextColor(AZURE);
+          if(use.i > 10)oslSetTextColor(VIOLET);
+          if(use.i > 12)oslSetTextColor(ROSE);
+          if(use.i > 14)oslSetTextColor(ORANGE);
+          if(use.i > 16)oslSetTextColor(CHARTREUSE);
+          if(use.i > 18)oslSetTextColor(SPRING_GREEN);
+          if(use.i > 20)oslSetTextColor(CYAN);
+          if(use.i > 22)oslSetTextColor(MAGENTA);
+          if(use.i > 24)oslSetTextColor(BLUE);
+          if(use.i > 26)oslSetTextColor(WHITE);
+          if(use.i > 28)oslSetTextColor(RED);
+          if(use.i > 30){use.nextLevel = false; use.i = 0; use.q = 0;}
+          oslPrintf_xy(player.image->x, (player.image->y - 10) - use.i, "NEXT LEVEL");
+    }
+        
+    //update items
+    powerup.UpdateItem(use.level);
+
+    oslEndDrawing();
+    oslSyncFrame();
+  }
+    
+  //turn menu music back on
+  oslPlaySound(menu_music, 1); 
+  oslSetSoundLoop(menu_music, 1);
+    
+  //reset 
+  for(int i = 0; i < MAX_ENEMIES; i++){
+	  enemy[i].alive = false;
+	  if(enemy[i].image != NULL) oslDeleteImage(enemy[i].image);
+  }
+  
+  player.quit = false;
+  if(powerup.image != NULL)oslDeleteImage(powerup.image);
+  if(powerup.collected != NULL)oslDeleteSound(powerup.collected);
+  if(powerup.missed != NULL){oslStopSound(powerup.missed); oslDeleteSound(powerup.missed);}
+    
+  return 0;
+}
+
+//The client is connected and can send data:
+void clientConnected(struct remotePsp *aPsp)
+{
+    //adhoc game starts here
+    //stop menu music
+    oslStopSound(menu_music);
+    
+    //create powerups
+    ITEM powerup;
+    
+    //first we have to setup the player for the first time
+    if(player.initialBoot){player.SetUp(DUDE); player.initialBoot = false;}
+    
+    //if its not the first time reset player stats
+    else player.SetUp(player.id);
+    player.quit = false;
+    
+    //then set up a level
+    if(player.lives <= 0)player.lives = 2;
+            
+    /* main game loop */
+    while(!player.quit)
+    {
+        oslStartDrawing();
+        oslSetBkColor(RGBA(0,0,0,0)); 
+        oslClearScreen(BLACK);
+        
+        //handle game
+        u8 *macAddress = oslAdhocGetMacAddress();
+        
+        //update game
+        use.UPDATER();
+      
+        //update game type
+        if(use.currentLevel > LAST_LEVEL && use.spawned == 0) 
+            use.COMPUTER_GENERATED_LEVELS();
+        else 
+            use.MANUALLY_CODED_LEVELS();
+        
+        
+        //update player
+        player.UpdatePlayer(0, aPsp);
+        if(!player.toggle) {
+          oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", use.currentLevel, totalNum);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
+          oslPrintf_xy(5, 55, "Current state: %s", oslAdhocGetState() == ADHOC_INIT ? "OK" : "KO");
+	      oslPrintf_xy(5, 65, "Your MAC address: %02X:%02X:%02X:%02X:%02X:%02X", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
+	      oslPrintf_xy(5, 75, "You are playing with: %s", aPsp->name);
+        }
+      
+        if(use.nextLevel) {
+          //play cool effect for next level
+          use.q++;
+          if(use.q > 5){use.i++; use.q = 0;}
+          if(use.i > 2)oslSetTextColor(YELLOW);
+          if(use.i > 4)oslSetTextColor(LIGHTGRAY);
+          if(use.i > 6)oslSetTextColor(BLACK);
+          if(use.i > 8)oslSetTextColor(AZURE);
+          if(use.i > 10)oslSetTextColor(VIOLET);
+          if(use.i > 12)oslSetTextColor(ROSE);
+          if(use.i > 14)oslSetTextColor(ORANGE);
+          if(use.i > 16)oslSetTextColor(CHARTREUSE);
+          if(use.i > 18)oslSetTextColor(SPRING_GREEN);
+          if(use.i > 20)oslSetTextColor(CYAN);
+          if(use.i > 22)oslSetTextColor(MAGENTA);
+          if(use.i > 24)oslSetTextColor(BLUE);
+          if(use.i > 26)oslSetTextColor(WHITE);
+          if(use.i > 28)oslSetTextColor(RED);
+          if(use.i > 30){use.nextLevel = false; use.i = 0; use.q = 0;}
+          oslPrintf_xy(player.image->x, (player.image->y - 10) - use.i, "NEXT LEVEL");
+        }
+        
+        //update items
+        powerup.UpdateItem(use.level);
+    }
+    
+    oslAdhocTerm();
+    
+    /* stop any possible playing music */
+    oslStopSound(use.battle1); 
+    oslStopSound(use.battle2); 
+    oslStopSound(use.battle3); 
+    oslStopSound(use.battle4); 
+    oslStopSound(use.battle5);
+    
+    //turn menu music back on
+    oslPlaySound(menu_music, 1); 
+    oslSetSoundLoop(menu_music, 1);
+    
+    return;
+}
+
+//The server accepted the connection and it's ready to receive data:
+void serverConnected(struct remotePsp *aPsp)
+{
+    //adhoc game starts here
+    oslStopSound(menu_music);
+    
+    //setup friend
+    //int dataLength = 0;
+    
+    //create powerups
+    ITEM powerup;
+    
+    //first we have to setup the player for the first time
+    if(player.initialBoot){player.SetUp(DUDE); player.initialBoot = false;}
+    
+    //if its not the first time reset player stats
+    else player.SetUp(player.id);
+    player.quit = false;
+    
+    //then set up a level
+    if(player.lives <= 0)player.lives = 2;
+            
+    /* main game loop */
+    while(!player.quit)
+    {
+        oslStartDrawing();
+        oslSetBkColor(RGBA(0,0,0,0)); 
+        oslClearScreen(BLACK);
+        
+        //handle game
+        u8 *macAddress = oslAdhocGetMacAddress();
+        
+        //update game
+        use.UPDATER();
+      
+        //update game type
+        if(use.currentLevel > LAST_LEVEL && use.spawned == 0) 
+            use.COMPUTER_GENERATED_LEVELS();
+        else 
+            use.MANUALLY_CODED_LEVELS();
+        
+        
+        //update player
+        player.UpdatePlayer(0, aPsp);
+        if(!player.toggle) {
+          oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", use.currentLevel, totalNum);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
+          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
+          oslPrintf_xy(5, 55, "Current state: %s", oslAdhocGetState() == ADHOC_INIT ? "OK" : "KO");
+	      oslPrintf_xy(5, 65, "Your MAC address: %02X:%02X:%02X:%02X:%02X:%02X", macAddress[0], macAddress[1], macAddress[2], macAddress[3], macAddress[4], macAddress[5]);
+	      oslPrintf_xy(5, 75, "You are playing with: %s", aPsp->name);
+        }
+      
+        if(use.nextLevel) {
+          //play cool effect for next level
+          use.q++;
+          if(use.q > 5){use.i++; use.q = 0;}
+          if(use.i > 2)oslSetTextColor(YELLOW);
+          if(use.i > 4)oslSetTextColor(LIGHTGRAY);
+          if(use.i > 6)oslSetTextColor(BLACK);
+          if(use.i > 8)oslSetTextColor(AZURE);
+          if(use.i > 10)oslSetTextColor(VIOLET);
+          if(use.i > 12)oslSetTextColor(ROSE);
+          if(use.i > 14)oslSetTextColor(ORANGE);
+          if(use.i > 16)oslSetTextColor(CHARTREUSE);
+          if(use.i > 18)oslSetTextColor(SPRING_GREEN);
+          if(use.i > 20)oslSetTextColor(CYAN);
+          if(use.i > 22)oslSetTextColor(MAGENTA);
+          if(use.i > 24)oslSetTextColor(BLUE);
+          if(use.i > 26)oslSetTextColor(WHITE);
+          if(use.i > 28)oslSetTextColor(RED);
+          if(use.i > 30){use.nextLevel = false; use.i = 0; use.q = 0;}
+          oslPrintf_xy(player.image->x, (player.image->y - 10) - use.i, "NEXT LEVEL");
+        }
+        
+        //update items
+        powerup.UpdateItem(use.level);
+    }
+    
+    oslAdhocTerm();
+    
+    /* stop any possible playing music */
+    oslStopSound(use.battle1); 
+    oslStopSound(use.battle2); 
+    oslStopSound(use.battle3); 
+    oslStopSound(use.battle4); 
+    oslStopSound(use.battle5);
+    
+    //turn menu music back on
+    oslPlaySound(menu_music, 1); 
+    oslSetSoundLoop(menu_music, 1);
+    
+    return;
 }
 
 void PauseGame( void )
@@ -235,7 +438,7 @@ void VAUGHN_LOGO( void )
      oslEndDrawing();
      oslSyncFrame();
      
-     Wait;
+     Wait();
      oslDeleteImage(logo);
      
 }

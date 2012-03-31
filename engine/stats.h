@@ -1,9 +1,22 @@
-class STATS
+/** 
+ * class STATS ~V@ughn
+ * -------------------
+ * ->Super class of class BOSS and class OBJECT
+ *
+ * @SpriteAnimate()               - animates sprites
+ * @SetImage(const short id)      - sets image
+ * @SetHealth(const short id)     - sets health
+ * @SetAttack(const short id)     - sets attack power
+ * @SetJumpHeight(const short id) - sets jump height
+ * @SetPower(const short id)      - sets power level
+ *      
+ */
+class STATS 
 {
     public:
-        
         //properties
         short id;
+        short xp;
         
         int jumpHeight;
         int maxHealth;
@@ -18,28 +31,83 @@ class STATS
         bool touchingGround;
         bool attacking;
         
+        short manipulate;
+        short position;
+        short march;
+          
         //image
-        OSL_IMAGE * image;
+        IMAGE * image;
           
         //methods
-        OSL_IMAGE * SetImage(const short id);
-          
-        int SetHealth(const short id);
-          
-        int SetAttack(const short id);
-          
-        short SetJumpHeight(const short id);
-          
-        long long SetPower(const short id);
+        virtual inline void SpriteAnimate();
+        virtual IMAGE * SetImage(const short id);
+        virtual int SetHealth(const short id);
+        virtual int SetAttack(const short id);
+        virtual short SetJumpHeight(const short id);
+        virtual long long SetPower(const short id);
         
-}assign;
+        STATS();
+        ~STATS();
+        
+};
+
+/* define fighter ID's */
+#define MDUDE -1
+#define DUDE 0
+#define SATHE_NORMAL 1
+#define REPUBLIKEN 2
+#define ORRE 3
+#define BARON 4
+#define BLADE 5
+#define RYAN 6
+#define EARTH 7
+#define ATLANTIS 8
+#define VEXUS 9
+#define ZAMUS_NORMAL 10
+#define SUPER_SATHE 11
+#define GENAMI 12
+#define ORPHEUS 13
+#define SATHIMUS 14
+#define WEAK_KROM 15
+#define WEAK_WRAITH 16
+#define WRAITH 17
+#define KRITH 18
+#define ULTRA_SATHE 19
+#define ULTRA_ZAMUS 20
+#define KROM 21
+#define SATHIS 22
+#define PHALEM 23
+#define FOURTH_ELDER 24
+#define FIFTH_ELDER 25
+#define SIXTH_ELDER 26
+#define ELDER_SATHE 27
+#define ETHAS 28
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//STATS methods://///////////////////////////////////////////////////////////////////////////
+
+inline void STATS::SpriteAnimate()
+{	
+    //Moves the sprite in the row that it is in
+    manipulate++; if(manipulate > 10) {march++; manipulate = 0;}
+    
+    oslSetImageTileSize(image,(march * 53),position,53,53);
+    
+    if (march == 3) march = 0;
+    
+    if(image != NULL) oslDrawImage(image);
+	else oslWarning("ERROR! Image is equal to NULL! Found in SpriteAnimate() function!");
+}
 
 short STATS::SetJumpHeight(const short id)
 {   
     short height = 5;
     
-    if(id == DUDE)              height = 20;
-    else if(id == SATHE_NORMAL) height = 12;
+    if(id == DUDE)              height = 17;
+    else if(id == SATHE_NORMAL) height = 15;
     else if(id == REPUBLIKEN)   height = 8;
     else if(id == ORRE)         height = 12;
     else if(id == BARON)        height = 12;
@@ -47,7 +115,7 @@ short STATS::SetJumpHeight(const short id)
     else if(id == RYAN)         height = 12;
     else if(id == EARTH)        height = 12;
     else if(id == ATLANTIS)     height = 12;
-    else if(id == VEXUS)        height = 13;
+    else if(id == VEXUS)        height = 22;
     else if(id == ZAMUS_NORMAL) height = 13;
     else if(id == SUPER_SATHE)  height = 13;
     else if(id == GENAMI)       height = 13;
@@ -119,12 +187,12 @@ int STATS::SetAttack(const short id)
     else if(id == REPUBLIKEN)   attack = 2;
     else if(id == ORRE)         attack = 13;
     else if(id == BARON)        attack = 16;
-    else if(id == BLADE)        attack = 23;
-    else if(id == RYAN)         attack = 28;
-    else if(id == EARTH)        attack = 32;
-    else if(id == ATLANTIS)     attack = 26;
-    else if(id == VEXUS)        attack = 34;
-    else if(id == ZAMUS_NORMAL) attack = 30;
+    else if(id == BLADE)        attack = 27;
+    else if(id == RYAN)         attack = 30;
+    else if(id == EARTH)        attack = 34;
+    else if(id == ATLANTIS)     attack = 35;
+    else if(id == VEXUS)        attack = 42;
+    else if(id == ZAMUS_NORMAL) attack = 34;
     else if(id == SUPER_SATHE)  attack = 80;
     else if(id == GENAMI)       attack = 72;
     else if(id == ORPHEUS)      attack = 180;
@@ -186,47 +254,12 @@ long long STATS::SetPower(const short id)
     return power;
 }
 
-OSL_IMAGE * STATS::SetImage(const short id)
+IMAGE * STATS::SetImage(const short id)
 {
-    OSL_IMAGE * image = NULL;
+    IMAGE * image = NULL;
     
-    if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf1.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == DUDE)              image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == SATHE_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == REPUBLIKEN)   image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ORRE)         image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == BARON)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == BLADE)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == RYAN)         image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == EARTH)        image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ATLANTIS)     image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal2.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == VEXUS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ZAMUS_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == SUPER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == GENAMI)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ORPHEUS)      image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == SATHIMUS)     image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == WEAK_KROM)    image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == WEAK_WRAITH)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == WRAITH)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == KRITH)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ULTRA_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ULTRA_ZAMUS)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == KROM)         image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == SATHIS)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == PHALEM)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == FOURTH_ELDER) image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == FIFTH_ELDER)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == SIXTH_ELDER)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ELDER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == ETHAS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
-    else oslFatalError("ERROR! INVALID PARAMETER PASSED TO OSL_IMAGE * loadImage(const short id)!!");
-
-    return image;
-}
-/*
-if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf1.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == DUDE)              image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    if(id == MDUDE)              image = oslLoadImageFilePNG((char*)"img/fighters/Mdude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == DUDE)         image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == SATHE_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/sathe_normal.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == REPUBLIKEN)   image = oslLoadImageFilePNG((char*)"img/fighters/REPUBLIKEN.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == ORRE)         image = oslLoadImageFilePNG((char*)"img/fighters/orre.png", OSL_IN_RAM, OSL_PF_5551);
@@ -235,7 +268,7 @@ if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf
     else if(id == RYAN)         image = oslLoadImageFilePNG((char*)"img/fighters/ryan.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == EARTH)        image = oslLoadImageFilePNG((char*)"img/fighters/earth.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == ATLANTIS)     image = oslLoadImageFilePNG((char*)"img/fighters/atlantis.png", OSL_IN_RAM, OSL_PF_5551);
-    else if(id == VEXUS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
+    else if(id == VEXUS)        image = oslLoadImageFilePNG((char*)"img/fighters/vexus.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == ZAMUS_NORMAL) image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == SUPER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == GENAMI)       image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
@@ -256,4 +289,19 @@ if(id == -1)                     image = oslLoadImageFilePNG((char*)"img/data/xf
     else if(id == ELDER_SATHE)  image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else if(id == ETHAS)        image = oslLoadImageFilePNG((char*)"img/fighters/dude.png", OSL_IN_RAM, OSL_PF_5551);
     else oslFatalError("ERROR! INVALID PARAMETER PASSED TO OSL_IMAGE * loadImage(const short id)!!");
-*/
+    
+    if(!image) oslFatalError("ERROR! Image is equal to NULL!");
+    
+    return image;
+}
+
+STATS::STATS()
+{
+  xp = 0;
+  return;
+}
+
+STATS::~STATS()
+{
+  return;
+}

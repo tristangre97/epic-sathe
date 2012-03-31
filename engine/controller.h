@@ -23,7 +23,7 @@ class CONTROLLER
         int i;
         int q;
 
-        /* images */
+        //images
         IMAGE * cloud1;
         IMAGE * cloud2;
         IMAGE * cloud3;
@@ -34,7 +34,7 @@ class CONTROLLER
         IMAGE * cloud8;
         IMAGE * level;
         
-        /* sounds */
+        //sounds
         SOUND * nextLevelSound;
         SOUND * battle1;
         SOUND * battle2;
@@ -45,12 +45,10 @@ class CONTROLLER
         CONTROLLER();
         ~CONTROLLER();
         
+        //behaviors
         virtual void BOSS_LEVELS(bool &quit);
-        
         virtual void MANUALLY_CODED_LEVELS();
-        
         virtual void COMPUTER_GENERATED_LEVELS();
-        
         virtual void UPDATER();
         
     private:
@@ -298,7 +296,7 @@ void CONTROLLER::UPDATER()
         if(cloud8->x > 500) cloud8->x = -110;
     }
  
-	/* draw clouds */
+	//draw clouds
     if(cloud1 != NULL) oslDrawImageSimple(cloud1); 
     if(cloud2 != NULL) oslDrawImageSimple(cloud2); 
     if(cloud3 != NULL) oslDrawImageSimple(cloud3); 
@@ -308,13 +306,15 @@ void CONTROLLER::UPDATER()
     if(cloud7 != NULL) oslDrawImageSimple(cloud7); 
     if(cloud8 != NULL) oslDrawImageSimple(cloud8); 
 
-	/* draw/update enemies */
-	for(int i = 0; i < MAX_ENEMIES; i++)
-	{
+	//update all enemies
+	for(int i = 0; i < MAX_ENEMIES; i++){
       if(enemy[i].alive){
-        enemy[i].UpdateEnemy();
         if(enemy[i].health <= 0) 
+        {
 			enemy[i].Reward(enemy[i].id, player.money);
+			enemy[i].alive = false;
+        }
+        enemy[i].UpdateEnemy();
 	  }
     }
 

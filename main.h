@@ -1,33 +1,16 @@
-#include <oslib/oslib.h>
-
-/*Wait; will pause the screen for 3 seconds*/
-#define Wait sceKernelDelayThread(3000000);
-
-/*Wait; will pause the screen for 0.5 seconds*/
-#define hWait sceKernelDelayThread(500000);
-
-/* normal psp calls */
-PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
-PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-PSP_HEAP_SIZE_KB(-1024);
-
-/* menu macros */
-#define SHOW_MAIN_MENU 1
-#define SHOW_SECOND_MENU 2
-#define EXIT 0
-
 typedef OSL_IMAGE IMAGE;
 typedef OSL_SOUND SOUND;
 typedef OSL_FONT FONT;
 
-/* global OSL_SOUND and OSL_IMAGE variables */
-SOUND *menu_music, *select, *scream, *groan, *punch1, *punch2, *hard_punch, *soft_punch, *confuse,
-*stun, *smashFist, *battle1, *battle2, *battle3, *battle4, *groan2, *bought, *battle5, *error,
-*nextLevelSound;
+#define GROUND 234
+#define LAST_LEVEL 8
 
-IMAGE *level, *cloud1, *cloud2, *cloud3, *cloud4, *cloud5, *cloud6, *cloud7, *cloud8;
+/*Wait; will pause the screen for 3 seconds*/
+#define Wait() sceKernelDelayThread(3000000);
 
-/* define our color set for easy use */
+/*Wait; will pause the screen for 0.5 seconds*/
+#define hWait() sceKernelDelayThread(500000);
+
 enum colors {
     RED          = 0xFF0000FF,
 	GREEN        = 0xFF00FF00,
@@ -48,62 +31,64 @@ enum colors {
     YELLOW       = 0xFF00FFFF,
 };
 
-
-/************************* GLOBALS ********************************/
-//keeps track of the level the player is on
-int currentLevel = 1;
-int currentBossLevel = 1;
-int trackLevel = currentBossLevel;
-
-//checks to see if the level was loaded already
-int spawned = 0;
+/******************** 
+ * global Variables *
+ ********************/
 int totalNum = 0;
-/************************* GLOBALS ********************************/
+SOUND *menu_music, *scream, *punch1, *punch2, *hard_punch, *soft_punch, *confuse, 
+*stun, *smashFist, *jump, *groan, *groan2;
+FONT * ltn;
 
-
-/* very simple function.... decided to just place it here */
+/**
+ * (very simple function.... decided to just place it here)
+ * @param image - source image
+ * @param x - x position for source image to be drawn
+ * @param y - y position for source image to be drawn
+ */
 inline void placeSelector(OSL_IMAGE * image, int x, int y)
 { image->x = x; image->y = y; }
 
-int collision(OSL_IMAGE *img1,float img1posX, float img1posY, OSL_IMAGE *img2, float img2posX, float img2posY );
-
-void HANDLE_GAME();
-
-void PauseGame( void );
-
-void AnimatePowerUp();
-
-int BOSS_MODE();
-
-int MAIN_GAME(const int MODE);
-
+/**
+ * Shows my custom logo (mandatory for any mod of this game)
+ */
 void VAUGHN_LOGO( void );
 
-#include "engine/stats.h"
+/**
+ * Pauses the game and allows access to menu
+ */
+void PauseGame( void );
 
-/* had to define here due to linking problems... messy fix I know */
-class Multiplayer : public STATS {
-    public:
-        Multiplayer();
-        ~Multiplayer();
+/**
+ * Simple collision test... self explanatory code
+ */
+int collision(OSL_IMAGE *img1,float img1posX, float img1posY, OSL_IMAGE *img2, float img2posX, float img2posY );
 
-        int InitOnlineGame();
-        int InitAdhocGame();
-        
-    private:
-        
-}online;
+/**
+ * Main function of entire game
+ *@param MODE - if 1 game mode = SOLO, if 2 game mode = BOSS 
+ */
+int MAIN_GAME(const int MODE);
 
-#include "engine/player.h"
 
-#include "engine/io.h"
+/**
+ * Epic Sathe game engine
+ * (for documentation read each file within engine)
+ * ~made by V@ughn
+ */
+int SaveGame();
 
-#include "engine/enemy.h"
+int LoadGame();
 
-#include "engine/menu.h"
+#include "engine\stats.h"
 
-#include "engine/level.h"
+#include "engine\multiplayer.h"
 
-#include "engine/multiplayer.h"
+#include "engine\object.h"
 
-#include "engine/item.h"
+#include "engine\item.h"
+
+#include "engine\menu.h"
+
+#include "engine\controller.h"
+
+#include "engine\io.h"

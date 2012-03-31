@@ -375,20 +375,20 @@ void OBJECT::SetUpEnemy(const int changeId, int x, int y)
 	}
 
 	//if no slots ready tell the player and exit function to avoid errors
-	if(index == -1){oslWarning("ERROR! Unable to create enemy (no slots ready)."); return;}
+	if(index == -1 || index > MAX_ENEMIES){oslWarning("ERROR! Unable to create enemy (no slots ready)."); return;}
 
 	//set stats for that specific enemy
     enemy[index].id = changeId;
-    enemy[index].attack =    enemy[index].SetAttack(id);
-    enemy[index].health =    enemy[index].SetHealth(id);
+    enemy[index].attack =    enemy[index].SetAttack(enemy[index].id);
+    enemy[index].health =    enemy[index].SetHealth(enemy[index].id);
     enemy[index].maxHealth = enemy[index].health;
-    enemy[index].maxPower =  enemy[index].SetPower(id);
-    enemy[index].jumpHeight =enemy[index].SetJumpHeight(id);
+    enemy[index].maxPower =  enemy[index].SetPower(enemy[index].id);
+    enemy[index].jumpHeight =enemy[index].SetJumpHeight(enemy[index].id);
 	enemy[index].waitToAttack = 0;
 
 	//set image for enemy
-    if(enemy[index].image != NULL){oslDeleteImage(image);}
-    enemy[index].image = enemy[index].SetImage(id);
+    if(enemy[index].image != NULL){oslDeleteImage(enemy[index].image);}
+    enemy[index].image = enemy[index].SetImage(enemy[index].id);
     enemy[index].image->x = x;
     enemy[index].image->y = y;
     

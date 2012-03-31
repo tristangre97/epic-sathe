@@ -1,17 +1,21 @@
 /* 
  * class MENU ~V@ughn
  * -------------------
- * ->contains bought items
- *       -all items are expressed in boolean values if bought the value is set to true
- *               if not bought, the value is set to false
- * ->contains all menus wihtin the game
- *       -this class defines all the menus and can be used to launch a menu at any time
- *      
+ * ->menu container for the game
+ * 
+ * @virtual void BuyCharacters() - character buy menu
+ * @virtual void BuyItems() - buy items menu
+ * @virtual void BuyLives() - buy lives menu
+ * @virtual void UpgradeCharacter() - updgrade menu
+ * @virtual int Customize() - customize directory
+ * @virtual int MainMenu() - main menu
+ * @virtual int SecondaryMenu() - second main menu
+ * @virtual short BossMenu(...) - Boss selector menu
+ *
  */
 class MENU  
 {
     public:
-        
         //sounds
         SOUND * select;
         SOUND * bought;
@@ -48,24 +52,17 @@ class MENU
         bool ELDER_SATHE_bought;
         bool ETHAS_bought;
         
-        MENU();
-        ~MENU();
-        
+		//behaviors
         virtual void BuyCharacters();
-
         virtual void BuyItems();
-
         virtual void BuyLives();
-
         virtual void UpgradeCharacter();
-
         virtual int Customize();
-        
         virtual int MainMenu();
-        
         virtual int SecondaryMenu();
-        
         virtual short BossMenu(const int currentLevel, int &trackLevel);
+		MENU();
+        ~MENU();
     
     private:
         int menuChoice;
@@ -85,26 +82,9 @@ class MENU
 
 int MENU::MainMenu()
 {
-    OBJECT menuGuy[4];
-    
     menuChoice = 1;
-    IMAGE * background = oslLoadImageFilePNG((char*)"img/data/menu.png", OSL_IN_RAM, OSL_PF_5551);
+    IMAGE * background = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
     IMAGE * selector = oslLoadImageFilePNG((char*)"img/data/selector.png", OSL_IN_RAM, OSL_PF_5551);  
-    
-    //set up a menu animation
-    int x = 190;
-    for(int i = 0; i < 4; i++){
-      menuGuy[i].id = MDUDE;
-      menuGuy[i].image = menuGuy[i].SetImage(menuGuy[i].id);
-      menuGuy[i].position = ATTACKING_RIGHT;
-      menuGuy[i].image->x = x;
-      menuGuy[i].image->y = 202;
-      x += 60; 
-    }
-    menuGuy[0].position = STILL_LEFT;
-    menuGuy[1].position = ATTACKING_RIGHT;
-    menuGuy[2].position = ATTACKING_LEFT;
-    menuGuy[3].position = STILL_RIGHT;
     
     #define START_GAME 1
     #define HELP 2
@@ -194,13 +174,25 @@ int MENU::MainMenu()
 		oslStartDrawing();
 		oslClearScreen(BLACK);
 		oslDrawImage(background);
-        oslDrawImage(selector);
-        
-        //update animation
-        for(int i = 0; i < 4; i++){
-            oslDrawImage(menuGuy[i].image);
-            menuGuy[i].SpriteAnimate();
-        }
+
+		oslIntraFontSetStyle(ltn, 2.5f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 20, "Epic Sathe");
+
+		if(menuChoice == START_GAME) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 63, "Start");
+
+		if(menuChoice == HELP) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 93, "Help");
+
+		if(menuChoice == CREDITS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 123, "Credits");
+
+		if(menuChoice == EXIT_GAME) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 153, "Quit");
             
 		oslEndDrawing();
 		oslSyncFrame();		
@@ -215,7 +207,7 @@ int MENU::MainMenu()
 int MENU::SecondaryMenu()
 {
     menuChoice = 1;
-    IMAGE * background = oslLoadImageFilePNG((char*)"img/data/menu2.png", OSL_IN_RAM, OSL_PF_5551);
+    IMAGE * background = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
     IMAGE * selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);  
     
     #define SOLO_MODE 1
@@ -266,10 +258,32 @@ int MENU::SecondaryMenu()
 		oslStartDrawing();
 		oslClearScreen(BLACK);
 		oslDrawImage(background);
-        oslDrawImage(selector);
-        
+
+		oslIntraFontSetStyle(ltn, 2.5f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 20, "Epic Sathe");
+
+		if(menuChoice == SOLO_MODE) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 63, "Solo mode");
+
+		if(menuChoice == LOAD_OLD_STATS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 93, "Load");
+
+		if(menuChoice == BOSS_MODE) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 123, "Boss mode");
+
+		if(menuChoice == MULTIPLAYER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 153, "Multiplayer");
+
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 183, "Back");
+            
 		oslEndDrawing();
-		oslSyncFrame();		
+		oslSyncFrame();			
     }
     
     if(background != NULL){oslDeleteImage(background); background = NULL;}
@@ -281,7 +295,7 @@ int MENU::SecondaryMenu()
 int MENU::Customize()
 {
     //load images
-    IMAGE * background = oslLoadImageFile((char*)"img/data/customize1.png", OSL_IN_RAM, OSL_PF_5551);
+    IMAGE * background = oslLoadImageFile((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
     IMAGE * selector = oslLoadImageFile((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
     
     //menu manipulators
@@ -333,7 +347,27 @@ int MENU::Customize()
         oslStartDrawing();
         oslClearScreen(BLACK);
         oslDrawImage(background);
-        oslDrawImage(selector);
+        
+		if(menuChoice == BUY_NEW_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 63, "Buy New Characters");
+
+		if(menuChoice == BUY_NEW_ITEMS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 93, "Buy New Items");
+
+		if(menuChoice == BUY_MORE_LIVES) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 123, "Buy more Lives");
+
+		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 153, "Upgrade Character");
+
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 183, "Back");
+
         oslEndDrawing();
         oslSyncFrame();
     }
@@ -350,7 +384,7 @@ void MENU::BuyItems()
     cost = 99999;
     menuChoice = 1;
     IMAGE * selectorb = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * backgroundb = oslLoadImageFilePNG((char*)"img/data/customize3.png", OSL_IN_RAM, OSL_PF_5551);
+    IMAGE * backgroundb = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
     
     //menu macros
     #define FLYING_PUNCH 1
@@ -405,7 +439,27 @@ void MENU::BuyItems()
         oslStartDrawing();
         oslClearScreen(BLACK);
         oslDrawImage(backgroundb);
-        oslDrawImage(selectorb);
+        
+		if(menuChoice == FLYING_PUNCH) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 63, "Flying Punch $250");
+
+		if(menuChoice == FREEZING_PUNCH) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 93, "Freezing Punch $500");
+
+		if(menuChoice == SWIFTNESS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 123, "Swiftness $1000");
+
+		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 153, "Upgrade Character");
+
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 183, "Back");
+
         
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
