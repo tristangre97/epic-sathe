@@ -53,11 +53,11 @@ int InitAdhocGame()
 	    
 		if (oslIsWlanPowerOn()){
 			oslDrawString(10, 10, "Press [] to start a server");
-			oslDrawString(10, 25, "Press X to start a client");
+			oslDrawString(10, 35, "Press X to start a client");
 		}
 		else oslDrawString(10, 10, "Please turn on the wlan switch");
 			
-        oslDrawString(10, 35, "Press O to quit");
+        oslDrawString(10, 55, "Press O to quit");
 
         oslEndDrawing();
         

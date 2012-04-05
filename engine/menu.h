@@ -61,6 +61,7 @@ class MENU
         virtual int MainMenu();
         virtual int SecondaryMenu();
         virtual short BossMenu(const int currentLevel, int &trackLevel);
+
 		MENU();
         ~MENU();
     
@@ -84,7 +85,6 @@ int MENU::MainMenu()
 {
     menuChoice = 1;
     IMAGE * background = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * selector = oslLoadImageFilePNG((char*)"img/data/selector.png", OSL_IN_RAM, OSL_PF_5551);  
     
     #define START_GAME 1
     #define HELP 2
@@ -101,13 +101,11 @@ int MENU::MainMenu()
         if(menuChoice < 1) menuChoice = 4;
 		
 		if(menuChoice == START_GAME){
-		  placeSelector(selector, 19,113);
 		  if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return SHOW_SECOND_MENU;}                      
 		}
         
         else if(menuChoice == HELP)
         {
-		  placeSelector(selector, 19, 149);
 		  if(osl_keys->pressed.cross)
           {
                 oslPlaySound(select, 2); 
@@ -132,7 +130,6 @@ int MENU::MainMenu()
 		
 		else if(menuChoice == CREDITS)
         {
-		  placeSelector(selector, 19, 191);
 		  if(osl_keys->pressed.cross)
           {
                 oslPlaySound(select, 2);
@@ -143,22 +140,34 @@ int MENU::MainMenu()
     	  
                   oslStartDrawing();
                   oslClearScreen(BLACK);
-          
                   oslSetTextColor(RED);
                   oslPrintf_xy(5, 15, "Credits: Epic Sathe %s", BUILD_ID);
                   oslSetTextColor(WHITE);
-          
-                  oslPrintf_xy(5, 25, "Epic Sathe, an epic game made by V@ughn");
-          
+                  oslPrintf_xy(5, 25, "Programming: V@ughn");
+				  oslPrintf_xy(5, 35, "Art: Devin and V@ughn");
                   oslSetTextColor(RED);
-                  oslPrintf_xy(5, 45, "Tools used:");
+                  oslPrintf_xy(5, 55, "Tools used:");
                   oslSetTextColor(WHITE);
-          
-                  oslPrintf_xy(5, 55, "-Dev-C++ 4.9.9.2");
-				  oslPrintf_xy(5, 65, "Microsoft Visual C++ Express");
-                  oslPrintf_xy(5, 75, "-sfxr sound generator");
-                  oslPrintf_xy(5, 85, "-MS paint");
-                  oslPrintf_xy(5, 95, "-oslib + gu of pspsdk");
+                  oslPrintf_xy(5, 65, "-Dev-C++ 4.9.9.2");
+				  oslPrintf_xy(5, 75, "-Microsoft Visual C++ Express 2010");
+                  oslPrintf_xy(5, 85, "-sfxr and cfxr sound generators");
+                  oslPrintf_xy(5, 95, "-MS paint");
+				  oslPrintf_xy(5, 105, "-Paint.NET");
+                  oslPrintf_xy(5, 115, "-oslib");
+				  oslSetTextColor(RED);
+                  oslPrintf_xy(5, 135, "Latest Changes:");
+				  oslSetTextColor(WHITE);
+				  oslPrintf_xy(5, 145, "-changed background image");
+				  oslPrintf_xy(5, 155, "-replaced all menus with a new look");
+				  oslPrintf_xy(5, 165, "-did a complete rewrite on the game engine");
+				  oslPrintf_xy(5, 175, "      ~documented code as well");
+				  oslPrintf_xy(5, 185, "-fixed jumping (no second jump lag)");
+				  oslPrintf_xy(5, 195, "-created jumping sound effect");
+				  oslPrintf_xy(5, 205, "-enemies are now created dynamically");
+				  oslPrintf_xy(5, 215, "      ~there is not a fixed number of enemies");
+				  oslPrintf_xy(5, 225, "      ~enemy levels rise with level number now");
+				  oslPrintf_xy(5, 235, "-fixed some minor animation glitches");
+				  oslPrintf_xy(5, 245, "-player can now upgrade character!");
           
                   oslEndDrawing();
                   oslSyncFrame();
@@ -167,30 +176,29 @@ int MENU::MainMenu()
 		}
 		  
 		else if(menuChoice == EXIT_GAME){
-		  placeSelector(selector, 19, 228);
-	      if(osl_keys->pressed.cross) return EXIT;
+			if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return EXIT;}
 		}
 		  
 		oslStartDrawing();
 		oslClearScreen(BLACK);
 		oslDrawImage(background);
 
-		oslIntraFontSetStyle(ltn, 2.5f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
-		oslDrawString(19, 20, "Epic Sathe");
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Epic Sathe");
 
-		if(menuChoice == START_GAME) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == START_GAME) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 63, "Start");
 
-		if(menuChoice == HELP) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == HELP) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 93, "Help");
 
-		if(menuChoice == CREDITS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == CREDITS) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 123, "Credits");
 
-		if(menuChoice == EXIT_GAME) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == EXIT_GAME) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 153, "Quit");
             
@@ -199,7 +207,6 @@ int MENU::MainMenu()
     }
     
     if(background != NULL){oslDeleteImage(background); background = NULL;}
-    if(selector != NULL){oslDeleteImage(selector); selector = NULL;}
     
     return 1;
 }
@@ -207,9 +214,8 @@ int MENU::MainMenu()
 int MENU::SecondaryMenu()
 {
     menuChoice = 1;
-    IMAGE * background = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * selector = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);  
-    
+	IMAGE * background = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
+
     #define SOLO_MODE 1
     #define LOAD_OLD_STATS 2
     #define BOSS_MODE 3
@@ -226,32 +232,27 @@ int MENU::SecondaryMenu()
         if(menuChoice < 1) menuChoice = 5;
 		
 		if(menuChoice == SOLO_MODE){
-		  placeSelector(selector, 19,106);
 		  if(osl_keys->pressed.cross) {oslPlaySound(select, 2); MAIN_GAME(0); return SHOW_MAIN_MENU;}                      
 		}
         
         else if(menuChoice == LOAD_OLD_STATS){
-		  placeSelector(selector, 19, 143);
 		  if(osl_keys->pressed.cross){
                 oslPlaySound(select, 2); 
                 int check = LoadGame();
-                if(check == 0)oslWarning("ERROR! NO SAVE DATA CAN BE LOADED!"); 
+                if(check == 0)oslDebug("ERROR! NO SAVE DATA CAN BE LOADED!"); 
                 return SHOW_SECOND_MENU;
             }
 		}	
 		
 		else if(menuChoice == BOSS_MODE){
-		  placeSelector(selector, 19, 177);
 		  if(osl_keys->pressed.cross){oslPlaySound(select, 2); MAIN_GAME(1); return SHOW_MAIN_MENU; }
 		}
 		  
 		else if(menuChoice == MULTIPLAYER){
-		  placeSelector(selector, 19, 213);
 	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); InitAdhocGame(); return SHOW_MAIN_MENU;}
 		}
 		
 		else if(menuChoice == BACK){
-		  placeSelector(selector, 19, 250);
 	      if(osl_keys->pressed.cross) {oslPlaySound(select, 2); return SHOW_MAIN_MENU;}
 		}
 		  
@@ -259,26 +260,26 @@ int MENU::SecondaryMenu()
 		oslClearScreen(BLACK);
 		oslDrawImage(background);
 
-		oslIntraFontSetStyle(ltn, 2.5f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
-		oslDrawString(19, 20, "Epic Sathe");
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Epic Sathe");
 
-		if(menuChoice == SOLO_MODE) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == SOLO_MODE) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 63, "Solo mode");
 
-		if(menuChoice == LOAD_OLD_STATS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == LOAD_OLD_STATS) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 93, "Load");
 
-		if(menuChoice == BOSS_MODE) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BOSS_MODE) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 123, "Boss mode");
 
-		if(menuChoice == MULTIPLAYER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == MULTIPLAYER) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 153, "Multiplayer");
 
-		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 183, "Back");
             
@@ -286,18 +287,13 @@ int MENU::SecondaryMenu()
 		oslSyncFrame();			
     }
     
-    if(background != NULL){oslDeleteImage(background); background = NULL;}
-    if(selector != NULL){oslDeleteImage(selector); selector = NULL;}
-    
+	if(background != NULL){oslDeleteImage(background); background = NULL;}
+
     return 1;
 }
 
 int MENU::Customize()
 {
-    //load images
-    IMAGE * background = oslLoadImageFile((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * selector = oslLoadImageFile((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
-    
     //menu manipulators
     int menuChoice = 1;
     
@@ -319,62 +315,55 @@ int MENU::Customize()
         if(menuChoice < 1) menuChoice = 5;
         
         if(menuChoice == BUY_NEW_CHARACTER){
-		    placeSelector(selector, 19,116);
 		    if(osl_keys->pressed.cross || osl_keys->pressed.start) {oslPlaySound(select, 2); BuyCharacters();}                      
 		}
         
         else if(menuChoice == BUY_NEW_ITEMS){
-			placeSelector(selector, 19, 148);
 			if(osl_keys->pressed.cross || osl_keys->pressed.start){oslPlaySound(select, 2); BuyItems();}
 		}	
 		
 		else if(menuChoice == BUY_MORE_LIVES){
-			placeSelector(selector, 20, 177);
 			if(osl_keys->pressed.cross || osl_keys->pressed.start){oslPlaySound(select, 2); BuyLives();}
 		}
 		  
 		else if(menuChoice == UPGRADE_CHARACTER){
-			placeSelector(selector, 20, 205);
 			if(osl_keys->pressed.cross || osl_keys->pressed.start){oslPlaySound(select, 2); UpgradeCharacter();}
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selector, 20, 232);
 			if(osl_keys->pressed.cross || osl_keys->pressed.start){oslPlaySound(select, 2); return SHOW_MAIN_MENU;}
 		}
 		
 		/* draw everything */
         oslStartDrawing();
         oslClearScreen(BLACK);
-        oslDrawImage(background);
         
-		if(menuChoice == BUY_NEW_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Customize");
+
+		if(menuChoice == BUY_NEW_CHARACTER) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 63, "Buy New Characters");
 
-		if(menuChoice == BUY_NEW_ITEMS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BUY_NEW_ITEMS) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 93, "Buy New Items");
 
-		if(menuChoice == BUY_MORE_LIVES) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BUY_MORE_LIVES) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 123, "Buy more Lives");
 
-		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 153, "Upgrade Character");
 
-		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 183, "Back");
 
         oslEndDrawing();
         oslSyncFrame();
     }
-    
-    //free memory
-    if(background != NULL){oslDeleteImage(background); background = NULL;}
-    if(selector != NULL){oslDeleteImage(selector); selector = NULL;}
     
     return SHOW_MAIN_MENU;
 }
@@ -383,9 +372,7 @@ void MENU::BuyItems()
 {
     cost = 99999;
     menuChoice = 1;
-    IMAGE * selectorb = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * backgroundb = oslLoadImageFilePNG((char*)"img/data/lx1.png", OSL_IN_RAM, OSL_PF_5551);
-    
+
     //menu macros
     #define FLYING_PUNCH 1
     #define FREEZING_PUNCH 2
@@ -403,20 +390,17 @@ void MENU::BuyItems()
         if(menuChoice < 1) menuChoice = 5;
         
         if(menuChoice == FLYING_PUNCH){
-		    placeSelector(selectorb, 19,116);
 		    if(osl_keys->pressed.cross) {oslPlaySound(select, 2);}  
             else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                         
 		}
         
         else if(menuChoice == FREEZING_PUNCH){
-			placeSelector(selectorb, 19, 148);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
 			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}	
 		
 		else if(menuChoice == SWIFTNESS){
             cost = 1000;
-			placeSelector(selectorb, 20, 177);
 			if(osl_keys->pressed.cross && player.money > cost){
                 oslPlaySound(select, 2);
                 player.speed *= 2;
@@ -426,37 +410,37 @@ void MENU::BuyItems()
 		}
 		  
 		else if(menuChoice == SATHES_BRUTE){
-			placeSelector(selectorb, 20, 205);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2);}
 			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selectorb, 20, 232);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2); break;}
 		}
 		
         oslStartDrawing();
         oslClearScreen(BLACK);
-        oslDrawImage(backgroundb);
         
-		if(menuChoice == FLYING_PUNCH) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Customize");
+
+		if(menuChoice == FLYING_PUNCH) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 63, "Flying Punch $250");
 
-		if(menuChoice == FREEZING_PUNCH) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == FREEZING_PUNCH) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 93, "Freezing Punch $500");
 
-		if(menuChoice == SWIFTNESS) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == SWIFTNESS) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 123, "Swiftness $1000");
 
-		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == UPGRADE_CHARACTER) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 153, "Upgrade Character");
 
-		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.0f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
 		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
 		oslDrawString(19, 183, "Back");
 
@@ -468,10 +452,6 @@ void MENU::BuyItems()
         oslSyncFrame();
     }
     
-    //free memory
-    if(selectorb != NULL)  {oslDeleteImage(selectorb);}
-    if(backgroundb != NULL){oslDeleteImage(backgroundb);}
-    
     return;
 }
 
@@ -479,8 +459,6 @@ void MENU::BuyLives()
 {
     menuChoice = 1;
     cost = 0;
-    IMAGE * selectorl = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * backgroundl = oslLoadImageFilePNG((char*)"img/data/customize4.png", OSL_IN_RAM, OSL_PF_5551);
     
     //menu macros
     #define BUY1 1
@@ -499,42 +477,59 @@ void MENU::BuyLives()
         if(menuChoice < 1) menuChoice = 5;
         
         if(menuChoice == BUY1){
-		    placeSelector(selectorl, 19,116);
 		    cost = 100;
 		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives++;}    
               else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                     
 		}
         
         else if(menuChoice == BUY3){
-			placeSelector(selectorl, 19, 148);
 			cost = 250;
 		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=3;}       
               else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                  
 		}	
 		
 		else if(menuChoice == BUY9){
-			placeSelector(selectorl, 20, 177);
 			cost = 500;
 		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=9;}  
               else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                       
 		}
 		  
 		else if(menuChoice == BUY15){
-			placeSelector(selectorl, 20, 205);
 			cost = 890;
 		    if(osl_keys->pressed.cross && player.money >= cost){oslPlaySound(bought, 7); player.money -= cost; player.lives+=15;}  
             else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                       
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selectorl, 20, 232);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2); break;}
 		}
 		
         oslStartDrawing();
         oslClearScreen(BLACK);
-        oslDrawImage(backgroundl);
-        oslDrawImage(selectorl);
+        
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Customize");
+
+		if(menuChoice == BUY1) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 63, "Buy 1 life $100");
+
+		if(menuChoice == BUY3) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 93, "Buy 3 lives $250");
+
+		if(menuChoice == BUY9) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 123, "Buy 9 lives $500");
+
+		if(menuChoice == BUY15) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 153, "Buy 15 lives $890");
+
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 183, "Back");
+
         
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
@@ -543,10 +538,6 @@ void MENU::BuyLives()
         oslSyncFrame();
     }
     
-    //free memory
-    if(selectorl != NULL) {oslDeleteImage(selectorl); selectorl = NULL;}
-    if(backgroundl != NULL){oslDeleteImage(backgroundl); backgroundl = NULL;}
-    
     return;
 }
 
@@ -554,9 +545,7 @@ void MENU::UpgradeCharacter()
 {
     cost = 99999;
     menuChoice = 1;
-    IMAGE * selectoru = oslLoadImageFilePNG((char*)"img/data/selector2.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * backgroundu = oslLoadImageFilePNG((char*)"img/data/customize5.png", OSL_IN_RAM, OSL_PF_5551);
-    
+
     //menu macros
     #define UPGRADE_HEALTH 1
     #define UPGRADE_ATTACK 2
@@ -573,39 +562,135 @@ void MENU::UpgradeCharacter()
 		if(menuChoice > 5) menuChoice = 1;
         if(menuChoice < 1) menuChoice = 5;
         
-        if(menuChoice == UPGRADE_HEALTH){
-		    placeSelector(selectoru, 19,116);
-		    if(osl_keys->pressed.cross) {oslPlaySound(bought, 2);}   
-            else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                        
+        if(menuChoice == UPGRADE_HEALTH)
+		{
+			//set price of item
+			if(healthLevel == 0)     cost = 800;
+			else if(healthLevel == 1)cost = 1500;
+			else if(healthLevel == 2)cost = 3000;
+			else cost = 0;
+
+		    if(osl_keys->pressed.cross && player.money >= cost && healthLevel < 3){
+				player.money -= cost;
+				healthLevel++;
+			    if(healthLevel == 1)     healthManip = 1.3;
+				else if(healthLevel == 2)healthManip = 1.6;
+				else if(healthLevel == 3)healthManip = 2.1;
+				player.SetUp(player.id);
+
+				oslPlaySound(bought, 2);
+			}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);                         
 		}
         
-        else if(menuChoice == UPGRADE_ATTACK){
-			placeSelector(selectoru, 19, 148);
-			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
-			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
+        else if(menuChoice == UPGRADE_ATTACK)
+		{
+			//set price of item
+			if(attackLevel == 0)     cost = 1000;
+			else if(attackLevel == 1)cost = 2800;
+			else if(attackLevel == 2)cost = 5600;
+			else cost = 0;
+
+			if(osl_keys->pressed.cross && player.money >= cost){
+				player.money -= cost;
+				attackLevel++;
+				if(attackLevel == 1)     attackManip = 1.2;
+				else if(attackLevel == 2)attackManip = 1.5;
+				else if(attackLevel == 3)attackManip = 1.9;
+				player.SetUp(player.id);
+
+				oslPlaySound(bought, 2);
+			}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);       
 		}	
 		
-		else if(menuChoice == UPGRADE_JUMP_HEIGHT){
-			placeSelector(selectoru, 20, 177);
-			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
-			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
+		else if(menuChoice == UPGRADE_JUMP_HEIGHT)
+		{
+			//set price of item
+			if(jumpLevel == 0)     cost = 800;
+			else if(jumpLevel == 1)cost = 900;
+			else if(jumpLevel == 2)cost = 1000;
+			else cost = 0;
+
+			if(osl_keys->pressed.cross && player.money >= cost && jumpLevel < 3){
+				player.money -= cost;
+				jumpLevel++;
+				if(jumpLevel == 1)      jumpManip = 1.1;
+				else if(jumpLevel == 2) jumpManip = 1.2;
+				else if(jumpLevel == 3) jumpManip = 1.35;
+				player.SetUp(player.id);
+
+				oslPlaySound(bought, 2);
+			}
+			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);    
 		}
 		  
 		else if(menuChoice == UPGRADE_MAX_POWER){
-			placeSelector(selectoru, 20, 205);
-			if(osl_keys->pressed.cross){oslPlaySound(bought, 2);}
+			//set price of item
+			if(powerLevel == 0)cost = 3000;
+			else if(powerLevel == 1)cost = 8000;
+			else if(powerLevel == 2)cost = 14000;
+			else cost = 0;
+
+			if(osl_keys->pressed.cross && player.money >= cost && powerLevel < 3){
+				player.money -= cost;
+				powerLevel++;
+				if(powerLevel == 1)     powerManip = 1.6;
+				else if(powerLevel == 2)powerManip = 2.1;
+				else if(powerLevel == 3)powerManip = 3.4;
+				player.SetUp(player.id);
+
+				oslPlaySound(bought, 2);
+			}
 			else if(osl_keys->pressed.cross && player.money < cost)oslPlaySound(error, 7);     
 		}
 		
 		else if(menuChoice == BACK){
-			placeSelector(selectoru, 20, 232);
 			if(osl_keys->pressed.cross){oslPlaySound(select, 2); break;}  
 		}
 		
         oslStartDrawing();
         oslClearScreen(BLACK);
-        oslDrawImage(backgroundu);
-        oslDrawImage(selectoru);
+        
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Customize");
+
+		if(menuChoice == UPGRADE_HEALTH) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+
+		if(healthLevel == 0)     oslDrawString(19, 63, "Upgrade Health to Lv1 $800");
+		else if(healthLevel == 1)oslDrawString(19, 63, "Upgrade Health to Lv2 $1500");
+		else if(healthLevel == 2)oslDrawString(19, 63, "Upgrade Health to Lv3 $3000");
+		else if(healthLevel == 3)oslDrawString(19, 63, "Health Maxed Out");
+
+		if(menuChoice == UPGRADE_ATTACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+
+		if(attackLevel == 0)     oslDrawString(19, 93, "Upgrade Attack to Lv1 $1000");
+		else if(attackLevel == 1)oslDrawString(19, 93, "Upgrade Attack to Lv2 $2800");
+		else if(attackLevel == 2)oslDrawString(19, 93, "Upgrade Attack to Lv3 $5600");
+		else if(attackLevel == 3)oslDrawString(19, 93, "Attack Maxed Out");
+
+		if(menuChoice == UPGRADE_JUMP_HEIGHT) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		
+		if(jumpLevel == 0)     oslDrawString(19, 123, "Upgrade Jump to Lv1 $800");
+		else if(jumpLevel == 1)oslDrawString(19, 123, "Upgrade Jump to Lv2 $900");
+		else if(jumpLevel == 2)oslDrawString(19, 123, "Upgrade Jump to Lv3 $1000");
+		else if(jumpLevel == 3)oslDrawString(19, 123, "Jump Height Maxed Out");
+
+		if(menuChoice == UPGRADE_MAX_POWER) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		
+		if(powerLevel == 0)     oslDrawString(19, 153, "Upgrade Power to Lv1 $3000");
+		else if(powerLevel == 1)oslDrawString(19, 153, "Upgrade Power to Lv2 $8000");
+		else if(powerLevel == 2)oslDrawString(19, 153, "Upgrade Power to Lv3 $14000");
+		else if(powerLevel == 3)oslDrawString(19, 153, "Power Maxed Out");
+
+		if(menuChoice == BACK) oslIntraFontSetStyle(ltn, 1.3f,RED,BLACK,INTRAFONT_ALIGN_LEFT);
+		else oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 183, "Back");
+
         
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(250, 20, "Player money left: $%lld", player.money);
@@ -613,10 +698,6 @@ void MENU::UpgradeCharacter()
         oslEndDrawing();
         oslSyncFrame();
     }
-    
-    //free memory
-    if(selectoru != NULL) {oslDeleteImage(selectoru); selectoru = NULL;}
-    if(backgroundu != NULL){oslDeleteImage(backgroundu); backgroundu = NULL;}
     
     return;
 }
@@ -1311,7 +1392,7 @@ void MENU::BuyCharacters()
 		}
             
         oslStartDrawing();
-        
+
         /* draw background */
         if(pageOn == 1)      oslDrawImage(backgroundBC);
         else if(pageOn == 2) oslDrawImage(background2BC);
@@ -1364,6 +1445,9 @@ void MENU::BuyCharacters()
         //display player money
         oslSetTextColor(WHITE); oslPrintf_xy(240, 40, "Player money left: $%lld", player.money);
         
+		oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+		oslDrawString(19, 25, "Customize");
+
         oslEndDrawing();
         oslSyncFrame();
     }

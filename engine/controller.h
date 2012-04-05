@@ -3,10 +3,10 @@
  * ------------------------
  * ->handles the levels (spawns and updates clouds/background/enemies
  *
- * @BOSS_LEVELS(bool &quit) - updates a boss
- * @MANUALLY_CODED_LEVELS() - levels manually coded by yours truly
- * @COMPUTER_GENERATED_LEVELS() - infinitely creates levels
- * @UPDATER() - updates enemies/levels/clouds
+ * @virtual void BOSS_LEVELS(bool &quit) - updates a boss
+ * @virtual void MANUALLY_CODED_LEVELS() - levels manually coded by yours truly
+ * @virtual void COMPUTER_GENERATED_LEVELS() - infinitely creates levels
+ * @virtual void UPDATER() - updates enemies/levels/clouds
  *
  */
 class CONTROLLER 
@@ -307,16 +307,16 @@ void CONTROLLER::UPDATER()
     if(cloud8 != NULL) oslDrawImageSimple(cloud8); 
 
 	//update all enemies
-	for(int i = 0; i < MAX_ENEMIES; i++){
-      if(enemy[i].alive){
-        if(enemy[i].health <= 0) 
-        {
+	for(int i = 0; i < MAX_ENEMIES; i++)
+	{
+      if(enemy[i].alive)
+		  enemy[i].UpdateEnemy();
+
+        if(enemy[i].health <= 0 && enemy[i].alive) {
 			enemy[i].Reward(enemy[i].id, player.money);
 			enemy[i].alive = false;
         }
-        enemy[i].UpdateEnemy();
-	  }
-    }
+	}
 
     return;
 }

@@ -35,6 +35,19 @@ enum colors {
  * global Variables *
  ********************/
 int totalNum = 0;
+
+int attackLevel = 0;
+float attackManip = 1;
+
+int healthLevel = 0;
+float healthManip = 1;
+
+int jumpLevel = 0;
+float jumpManip = 1;
+
+int powerLevel = 0;
+float powerManip = 1;
+
 SOUND *menu_music, *scream, *punch1, *punch2, *hard_punch, *soft_punch, *confuse, 
 *stun, *smashFist, *jump, *groan, *groan2;
 FONT * ltn;

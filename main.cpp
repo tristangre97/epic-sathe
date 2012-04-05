@@ -1,9 +1,3 @@
-/**
- * Epic Sathe v0.5 ~made by V@ughn
- * -------------------------------
- * ->2d psp homebrew game
- *
- */
 #include <oslib/oslib.h>
 #include <pspkernel.h>
 #include <vector>
@@ -12,12 +6,12 @@
 /*********
  Build Id
 **********/
-const char * BUILD_ID = (char*)"v0.5";
+const char * BUILD_ID = (char*)"v0.51";
 
-/***********************************************************
+/*******************************************************
  MAX number of enemies that can exist at one time
- (WARNING the bigger value the slower the game loop becomes)
-************************************************************/
+(WARNING the bigger value the slower the game becomes)
+********************************************************/
 const int MAX_ENEMIES = 20;
 
 PSP_MODULE_INFO("Epic Sathe", 0, 1, 1);
@@ -84,8 +78,7 @@ int main(int argc, char* argv[])
     
     static int status = SHOW_MAIN_MENU;
    
-    while(1) 
-	{
+    while(1){
 	  if(status == SHOW_MAIN_MENU) status = menu.MainMenu();
        
 	  if(status ==  SHOW_SECOND_MENU) status = menu.SecondaryMenu();
@@ -115,8 +108,6 @@ int MAIN_GAME(const int MODE)
     powerup.image = oslLoadImageFilePNG((char*)"img/data/powerup.png", OSL_IN_RAM, OSL_PF_5551);
     powerup.collected = oslLoadSoundFileWAV((char*)"sounds/powerup.wav", OSL_FMT_NONE);
 
-	totalNum = 0;
-
     while(!player.quit)
     {
       oslStartDrawing();
@@ -141,9 +132,9 @@ int MAIN_GAME(const int MODE)
       player.UpdatePlayer(0, 0);
       if(!player.toggle) {
           oslSetTextColor(GREEN); oslPrintf_xy(player.image->x, player.image->y -10, "Hp: %lld", player.health);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", use.currentLevel, totalNum);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 35, "%d lives", player.lives);
-          oslSetTextColor(BLACK); oslPrintf_xy(5, 25, "$%lld", player.money);
+          oslSetTextColor(WHITE); oslPrintf_xy(5, 5, "LEVEL %i: %i enemies left", use.currentLevel, totalNum);
+          oslSetTextColor(WHITE); oslPrintf_xy(5, 35, "%d lives", player.lives);
+          oslSetTextColor(WHITE); oslPrintf_xy(5, 25, "$%lld", player.money);
       }
       
       if(use.nextLevel) {
@@ -178,12 +169,6 @@ int MAIN_GAME(const int MODE)
   //turn menu music back on
   oslPlaySound(menu_music, 1); 
   oslSetSoundLoop(menu_music, 1);
-    
-  //reset 
-  for(int i = 0; i < MAX_ENEMIES; i++){
-	  enemy[i].alive = false;
-	  if(enemy[i].image != NULL) oslDeleteImage(enemy[i].image);
-  }
   
   player.quit = false;
   if(powerup.image != NULL)oslDeleteImage(powerup.image);
@@ -387,22 +372,21 @@ void PauseGame( void )
 {
     //oslPauseSound(gameMusic, 1);
     
-    //load and position pause picture
-    IMAGE * pause_pic = oslLoadImageFilePNG((char*)"img/data/paused.png", OSL_IN_RAM, OSL_PF_5551);
-    IMAGE * second_pic = oslLoadImageFilePNG((char*)"img/data/paused2.png", OSL_IN_RAM, OSL_PF_5551);
-    pause_pic->x = 180;
-    pause_pic->y = 90;
-    second_pic->x = 180;
-    second_pic->y = 190;
-    
     //play a sound effect
     oslPlaySound(soft_punch, 7);
     
     //draw here to remove flicker
     oslStartDrawing();
     oslDrawImage(player.image);
-    oslDrawImage(pause_pic);
-    oslDrawImage(second_pic);
+    
+	oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+	oslDrawString(19, 25, "Paused");
+	oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+	oslDrawString(19, 63, "Press R to customize");
+	oslDrawString(19, 93, "Press L to save game");
+	oslDrawString(19, 123, "Press start to resume");
+	oslDrawString(19, 153, "Press select to quit");
+
     oslEndDrawing();
     oslSyncFrame();
         
@@ -416,13 +400,16 @@ void PauseGame( void )
             SaveGame();
             oslStartDrawing();
             oslDrawImage(player.image);
-            oslDrawImage(pause_pic);
-            oslDrawImage(second_pic);
+			oslIntraFontSetStyle(ltn, 1.7f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+	        oslDrawString(19, 25, "Paused");
+	        oslIntraFontSetStyle(ltn, 1.0f,WHITE,BLACK,INTRAFONT_ALIGN_LEFT);
+	        oslDrawString(19, 63, "Press R to customize");
+			oslDrawString(19, 93, "Press L to save game");
+	        oslDrawString(19, 123, "Press start to resume");
+	        oslDrawString(19, 153, "Press select to quit");
             oslEndDrawing();
             oslSyncFrame();}
-    }
-    
-    if(pause_pic != NULL){oslDeleteImage(pause_pic); pause_pic = NULL;}
+	    }
 
     return;
 }

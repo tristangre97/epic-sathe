@@ -118,7 +118,7 @@ void OBJECT::UpdatePlayer(int MODE, struct remotePsp *aPsp)
     if(health <= 0){
         lives--; image->y = 20; 
         image->x = 240; 
-        health = SetHealth(id);
+        health = SetHealth(id, healthManip);
     }
     if(lives < 0) quit = true;
     
@@ -213,6 +213,8 @@ inline void OBJECT::UpdateFriend(IMAGE * image)
 
 inline void OBJECT::UpdateEnemy()
 {
+	if(!image)oslWarning("ERROR NO IMAGE FOUND!");
+
     SpriteAnimate();
     
     if(image->x > 440)   image->x = 440;
@@ -225,7 +227,7 @@ inline void OBJECT::UpdateEnemy()
     else touchingGround = true;
     
     //show enemy  and enemy health
-    oslSetTextColor(0xFF0000FF);
+    oslSetTextColor(0xFFFFFFFF);
     oslPrintf_xy(image->x, image->y - 10, "HP: %lld", health);
     
     //check for collisions
@@ -297,11 +299,11 @@ inline void OBJECT::UpdateEnemy()
 void OBJECT::SetUp(const int changeId)
 {
     id = changeId;
-    attack =     SetAttack(id);
-    health =     SetHealth(id);
+    attack =     SetAttack(id, attackManip);
+    health =     SetHealth(id, healthManip);
     maxHealth =  health;
-    maxPower =   SetPower(id);
-    jumpHeight = SetJumpHeight(id);
+    maxPower =   SetPower(id, powerManip);
+    jumpHeight = SetJumpHeight(id, jumpManip);
     if(image != NULL){oslDeleteImage(image); image = NULL;}
     image = SetImage(id);
     image->x = 240;
